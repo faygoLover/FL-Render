@@ -1,0 +1,17 @@
+{
+  "flrender.quality.low": "Low",
+  "flrender.quality.medium": "Medium",
+  "flrender.quality.high": "High",
+  "flrender.quality.ultra": "Ultra",
+  "flrender.toggle.auto": "Auto",
+  "flrender.toggle.on": "On",
+  "flrender.toggle.off": "Off",
+  "flrender.option.quality": "Effects quality",
+  "flrender.option.quality.tooltip": "How much our mods' effects may cost (anomalies, portals, eyes, screen effects).\nLow - the plain, flat ways, for a weak computer.\nMedium - more per-pixel detail.\nHigh - all the main things.\nUltra - everything at its best.\nBelow, each technique can be switched on or off by itself (Auto = as the quality says).",
+  "flrender.option.detected": "Detected on first start: %s",
+  "flrender.option.auto_from": "Auto = on from \"%s\" quality. Mod: %s.",
+  "flrender.detect.chosen": "FL Render: effects quality set to \"%s\" for your computer. Change it: Options > Video Settings > FL Render tab.",
+  "flrender.detect.lowered": "FL Render: %s frames per second on average - effects quality lowered to \"%s\". Change it: Options > Video Settings > FL Render.",
+  "flrender.technique.flrender.world_light": "Coloured light from effects",
+  "flrender.technique.flrender.world_light.tooltip": "Burning and glowing effects (anomalies, portals) light up the ground and walls round them in their colour. The picture only: the world's light levels don't change. Nearest lights: medium 4, high 8, ultra 12."
+}
