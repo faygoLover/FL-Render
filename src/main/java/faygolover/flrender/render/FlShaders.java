@@ -22,11 +22,11 @@ public final class FlShaders {
     @Nullable
     private static ShaderInstance depthPack;
     @Nullable
-    private static ShaderInstance worldLight;
+    private static ShaderInstance colorLight;
 
     public static void onRegisterShaders(RegisterShadersEvent event) {
         register(event, "depth_pack", DefaultVertexFormat.POSITION_TEX, s -> depthPack = s);
-        register(event, "world_light", DefaultVertexFormat.POSITION_TEX, s -> worldLight = s);
+        register(event, "color_light", DefaultVertexFormat.POSITION_TEX, s -> colorLight = s);
     }
 
     private static void register(RegisterShadersEvent event, String name, VertexFormat format, Consumer<ShaderInstance> onLoad) {
@@ -43,7 +43,7 @@ public final class FlShaders {
     }
 
     @Nullable
-    static ShaderInstance worldLight() {
-        return worldLight;
+    static ShaderInstance colorLight() {
+        return colorLight;
     }
 }

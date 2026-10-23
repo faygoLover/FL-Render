@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "faygolover.flrender.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "flrender.refmap.json",
+  "client": [
+    "ClientLevelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

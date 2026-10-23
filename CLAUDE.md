@@ -4,7 +4,7 @@
 Oculus, поздний проход, глубина сцены, цветной свет от эффектов, постэффекты, единые настройки качества.
 **С автором общаемся по-русски.** План и решения — `docs/00_plan.md`.
 
-## Что есть (0.1.0)
+## Что есть (0.2.0)
 - `api.FlRender` — `technique(modid, key, fromQuality)`, `quality()`, `shaderPack()`, `shadowPass()`.
   `Quality` LOW/MEDIUM/HIGH/ULTRA, `Toggle` AUTO/ON/OFF, `Technique.on()`.
 - `config.Settings` — `config/flrender.properties` (пресет, `quality_auto`, `fps_checked`, `detected`, `technique.<modid>.<key>`).
@@ -14,11 +14,21 @@ Oculus, поздний проход, глубина сцены, цветной �
   группе на мод. Подписи техник — в lang самих модов: `flrender.technique.<modid>.<key>` и `.tooltip`.
 - `render.LatePass` — с шейдерпаком этапы мира запоминаются и проигрываются на AFTER_LEVEL (моды: `register`,
   `deferred`, `replayed`, `deferEntity`); раз за кадр «кадр готов»: SceneDepth → WorldLight → `onFrameReady` хуки.
-- `render.SceneDepth` (`need`), `render.WorldLight` (`provider`, точки и прямоугольники, техника `flrender.world_light`),
-  `render.PostFx` (свой PostChain), `render.ScreenPass`, `render.CameraPose`.
+- `render.SceneDepth` (`need`), `render.PostFx` (свой PostChain), `render.ScreenPass`, `render.CameraPose`.
+- **Цветной свет** (0.2.0, вместо прежнего экранного света по расстоянию): `light.ColorVolume` — куб вокруг камеры
+  (средне 48, высоко 64, ультра 96 блоков), секции кэшируются (`light.SectionCache`: потеря света по блокам как у
+  ванильного, небесный свет, цветные источники; грязные — по миксину `ClientLevel.sendBlockUpdated` /
+  `setSectionDirtyWithNeighbors`), расчёт в фоне (`light.LightJobs`: растекание по уровням, сквозь стены не идёт).
+  Две 3D-текстуры: подкраска от блоков (max по каналу, a = небо) и добавка от подвижных источников (сумма).
+  Проход `color_light` в `render.WorldLight` (на «кадр готов»), 3D-текстуры на блоках 5 и 6.
+  Источники: блоки и предметы — `light.ColorTable` (`config/flrender_colors.json`, по умолчанию только основная ваниль;
+  моды — `ColorTable.block/item`), эффекты — `WorldLight.provider` (точки, прямоугольники проёмов), предметы в руках /
+  на земле / в полёте — `light.ItemLights`. Техники `flrender.color_light`, `flrender.held_light` (с паком не светит);
+  ванильные блоки с паком не красятся (`shaders: false`).
 - Шейдеры только ASCII (строгие драйверы AMD/Intel).
 
 ## Кто пользуется
+S5 Glow Sticks 2.0.0 (блоки `s5glow:colored_light_<цвет>`, цвета ХИС — `ColorTable`; старая подкраска и `light_<цвет>` удалены).
 ZA 0.1.41.0 (всё своё на LatePass/SceneDepth/WorldLight, техники вместо `[graphics]`), RP Core 0.9.0 (глаза-шары —
 техника, помехи на PostFx), RP Portals 0.2.0 (свет — WorldLight, живой вид и снимок — техники).
 Зависимость у них: `flatDir libs` + `fg.deobf("blank:flrender:<версия>")`, в mods.toml `side="CLIENT"`.
