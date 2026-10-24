@@ -106,6 +106,18 @@ public final class Settings {
         props().setProperty(FPS_CHECKED, "true");
     }
 
+    private static final String COLORED_PACKS = "colored_light_packs";
+    private static final String COLORED_PACKS_DEFAULT = "colored,voxel,photon,ptgi";
+
+    /** Части имён шейдерпаков со своим цветным светом (через запятую, без учёта регистра). */
+    public static String[] coloredLightPacks() {
+        if (!props().containsKey(COLORED_PACKS)) {
+            props().setProperty(COLORED_PACKS, COLORED_PACKS_DEFAULT);
+            save();
+        }
+        return props().getProperty(COLORED_PACKS, COLORED_PACKS_DEFAULT).toLowerCase(Locale.ROOT).split("\\s*,\\s*");
+    }
+
     public static Toggle toggle(String id) {
         return parse(Toggle.class, props().getProperty(TECHNIQUE + id), Toggle.AUTO);
     }

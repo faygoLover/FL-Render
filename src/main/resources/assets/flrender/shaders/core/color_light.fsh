@@ -4,7 +4,8 @@
 // surface is and which way it faces; the light is read from two 3D textures round the camera (one texel per
 // block, the block in front of the surface):
 //   TintVol - rgb: colour of the block light sources (torches, lanterns, glow sticks...), a: sky light;
-//             it recolours what vanilla light already lit (weaker where the sun shines).
+//             pure colour x its share of the block light there: where it is the main light, the lit surface takes
+//             its colour like under an LED (other channels go dark), weaker where the sun shines.
 //   AddVol  - rgb: light of moving sources (effects, items in hand) x0.5; it adds light.
 
 uniform sampler2D DepthSampler;
@@ -17,6 +18,7 @@ uniform vec3 VolOrigin;
 uniform float VolSize;
 uniform float HasAdd;
 uniform float Tint;
+uniform float Boost;
 uniform float Day;
 uniform float HandDepth;
 
@@ -48,18 +50,16 @@ void main() {
     bool changed = false;
     vec4 t = texture(TintVol, q);
     float top = max(t.r, max(t.g, t.b));
-    float amount = top * Tint * edge * (1.0 - t.a * Day * 0.85);
+    float amount = clamp(top * Tint * edge * (1.0 - t.a * Day * 0.85), 0.0, 1.0);
     if (amount > 0.004) {
         vec3 hue = t.rgb / max(top, 0.001);
-        float lum = dot(hue, vec3(0.2126, 0.7152, 0.0722));
-        hue = min(hue / max(lum, 0.3), vec3(2.2));
-        col *= mix(vec3(1.0), hue, amount);
+        col = mix(col, scene * hue * Boost, amount);
         changed = true;
     }
     if (HasAdd > 0.5) {
         vec3 a = texture(AddVol, q).rgb * 2.0 * edge;
         if (a.r + a.g + a.b > 0.003) {
-            col += a * (scene * 0.9 + 0.12);
+            col += a * (scene * 1.2 + 0.2);
             changed = true;
         }
     }

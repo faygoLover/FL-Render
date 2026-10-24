@@ -22,14 +22,14 @@ import net.minecraft.world.level.lighting.LayerLightEventListener;
 final class SectionCache {
     private SectionCache() {}
 
-    /** Данные секции. {@code att}, {@code sky} — по блоку (x + 16 * (z + 16 * y)); источники — индекс | уровень << 12 | без пака << 16. */
-    record Data(byte[] att, byte[] sky, int[] srcPacked, int[] srcRgb) {
+    /** Данные секции. {@code att}, {@code sky}, {@code blk} (ванильный свет блоков) — по блоку (x + 16 * (z + 16 * y)); источники — индекс | уровень << 12 | без пака << 16. */
+    record Data(byte[] att, byte[] sky, byte[] blk, int[] srcPacked, int[] srcRgb) {
     }
 
     private static final int[] NO_INTS = new int[0];
-    private static final Data BELOW = new Data(filled((byte) 15), new byte[4096], NO_INTS, NO_INTS);
-    private static final Data ABOVE = new Data(new byte[4096], filled((byte) 15), NO_INTS, NO_INTS);
-    private static final Data UNLOADED = new Data(new byte[4096], new byte[4096], NO_INTS, NO_INTS);
+    private static final Data BELOW = new Data(filled((byte) 15), new byte[4096], new byte[4096], NO_INTS, NO_INTS);
+    private static final Data ABOVE = new Data(new byte[4096], filled((byte) 15), new byte[4096], NO_INTS, NO_INTS);
+    private static final Data UNLOADED = new Data(new byte[4096], new byte[4096], new byte[4096], NO_INTS, NO_INTS);
 
     private static final Long2ObjectOpenHashMap<Data> CACHE = new Long2ObjectOpenHashMap<>();
     private static final LongOpenHashSet DIRTY = new LongOpenHashSet();
@@ -100,7 +100,15 @@ final class SectionCache {
         } else {
             java.util.Arrays.fill(sky, (byte) skyListener.getLightValue(new BlockPos(x0 + 8, y0 + 8, z0 + 8)));
         }
-        if (sec == null || sec.hasOnlyAir()) return new Data(new byte[4096], sky, NO_INTS, NO_INTS);
+        // Ванильный свет блоков: какую долю света в блоке даёт цветной источник (там, где он главный, — чистый цвет).
+        byte[] blk = new byte[4096];
+        DataLayer blkLayer = level.getLightEngine().getLayerListener(LightLayer.BLOCK).getDataLayerData(SectionPos.of(sx, sy, sz));
+        if (blkLayer != null) {
+            for (int y = 0; y < 16; y++) for (int z = 0; z < 16; z++) for (int x = 0; x < 16; x++) {
+                blk[x + 16 * (z + 16 * y)] = (byte) blkLayer.get(x, y, z);
+            }
+        }
+        if (sec == null || sec.hasOnlyAir()) return new Data(new byte[4096], sky, blk, NO_INTS, NO_INTS);
         byte[] att = new byte[4096];
         IntArrayList packed = new IntArrayList();
         IntArrayList rgb = new IntArrayList();
@@ -118,6 +126,6 @@ final class SectionCache {
             packed.add(i | lv << 12 | (e.withShaders() ? 0 : 1 << 16));
             rgb.add(Math.round(e.r() * 255) << 16 | Math.round(e.g() * 255) << 8 | Math.round(e.b() * 255));
         }
-        return new Data(att, sky, packed.toIntArray(), rgb.toIntArray());
+        return new Data(att, sky, blk, packed.toIntArray(), rgb.toIntArray());
     }
 }

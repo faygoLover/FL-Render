@@ -61,8 +61,10 @@ public final class WorldLight {
 
     /** С паком рука в середине диапазона глубины: ближе этого — рука. */
     private static final float PACK_HAND_DEPTH = 0.75f;
-    /** Насколько цвет блоков-источников перекрашивает освещённое ими. */
-    private static final float TINT_STRENGTH = 0.65f;
+    /** Насколько цвет блоков-источников перекрашивает освещённое ими (1 — чистый цвет, как от светодиода). */
+    private static final float TINT_STRENGTH = 0.95f;
+    /** Яркость своего канала в перекрашенном (остальные гаснут — свет не кажется тусклее). */
+    private static final float TINT_BOOST = 1.8f;
 
     private static final List<Provider> PROVIDERS = new CopyOnWriteArrayList<>();
 
@@ -94,7 +96,7 @@ public final class WorldLight {
 
     static void draw(float partial, boolean pack) {
         boolean blocks = TECHNIQUE.on();
-        boolean held = HELD.on() && !pack;
+        boolean held = HELD.on() && !faygolover.flrender.client.Oculus.coloredPack();
         if (!blocks && !held || view == null || projection == null) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
@@ -129,6 +131,7 @@ public final class WorldLight {
         shader.safeGetUniform("VolSize").set((float) ColorVolume.size());
         shader.safeGetUniform("HasAdd").set(ColorVolume.hasAdd() ? 1.0f : 0.0f);
         shader.safeGetUniform("Tint").set(blocks ? TINT_STRENGTH : 0.0f);
+        shader.safeGetUniform("Boost").set(TINT_BOOST);
         shader.safeGetUniform("Day").set(Mth.clamp((darken - 0.2f) / 0.8f, 0.0f, 1.0f));
         shader.safeGetUniform("HandDepth").set(pack ? PACK_HAND_DEPTH : 0.0f);
         ColorVolume.bind();

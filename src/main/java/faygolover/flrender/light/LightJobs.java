@@ -17,7 +17,7 @@ final class LightJobs {
     private LightJobs() {}
 
     /** Мир объёма: потери света по блокам и небесный свет (0–15). */
-    record World(int ox, int oy, int oz, int size, byte[] att, byte[] sky) {
+    record World(int ox, int oy, int oz, int size, byte[] att, byte[] sky, byte[] blk) {
     }
 
     /** Подвижный источник (координаты мира). Прямоугольник: {@code nx, nz} — нормаль, {@code w, h} > 0. */
@@ -30,6 +30,7 @@ final class LightJobs {
         int n = size >> 4;
         byte[] att = new byte[size * size * size];
         byte[] sky = new byte[size * size * size];
+        byte[] blk = new byte[size * size * size];
         for (int cz = 0; cz < n; cz++) for (int cy = 0; cy < n; cy++) for (int cx = 0; cx < n; cx++) {
             SectionCache.Data d = sections[cx + n * (cy + n * cz)];
             for (int y = 0; y < 16; y++) for (int z = 0; z < 16; z++) {
@@ -37,13 +38,17 @@ final class LightJobs {
                 int dst = (cx << 4) + size * ((cy << 4) + y + size * ((cz << 4) + z));
                 System.arraycopy(d.att(), src, att, dst, 16);
                 System.arraycopy(d.sky(), src, sky, dst, 16);
+                System.arraycopy(d.blk(), src, blk, dst, 16);
             }
         }
-        return new World(ox, oy, oz, size, att, sky);
+        return new World(ox, oy, oz, size, att, sky, blk);
     }
 
-    /** Статический объём: RGBA (rgb — цвет блоков-источников, a — небесный свет). */
-    static byte[] statics(World w, SectionCache.Data[] sections, boolean skipVanilla) {
+    /**
+     * Статический объём: RGBA (rgb — чистый цвет блоков-источников, умноженный на их долю в ванильном свете блока:
+     * где источник главный — 1, «светодиод»; a — небесный свет). {@code none} — без источников (только небо).
+     */
+    static byte[] statics(World w, SectionCache.Data[] sections, boolean none) {
         int size = w.size(), n = size >> 4, cells = size * size * size;
         byte[] out = new byte[cells * 4];
         for (int i = 0; i < cells; i++) out[i * 4 + 3] = (byte) Math.min(255, (w.sky()[i] & 255) * 17);
@@ -52,14 +57,15 @@ final class LightJobs {
             SectionCache.Data d = sections[cx + n * (cy + n * cz)];
             for (int k = 0; k < d.srcPacked().length; k++) {
                 int p = d.srcPacked()[k];
-                if (skipVanilla && (p >> 16 & 1) != 0) continue;
+                if (none) continue;
                 int local = p & 4095, level = p >> 12 & 15;
                 int lx = local & 15, lz = local >> 4 & 15, ly = local >> 8;
                 int start = (cx << 4) + lx + size * ((cy << 4) + ly + size * ((cz << 4) + lz));
                 int rgb = d.srcRgb()[k];
-                float r = (rgb >> 16 & 255) / 255f, g = (rgb >> 8 & 255) / 255f, b = (rgb & 255) / 255f;
+                float top = Math.max(1, Math.max(rgb >> 16 & 255, Math.max(rgb >> 8 & 255, rgb & 255)));
+                float r = (rgb >> 16 & 255) / top, g = (rgb >> 8 & 255) / top, b = (rgb & 255) / top;
                 flood.run(new int[]{start}, level, (cell, lv) -> {
-                    float f = lv / 15f;
+                    float f = Math.min(1f, lv / (float) Math.max(1, w.blk()[cell] & 255));
                     int o = cell * 4;
                     out[o] = (byte) Math.max(out[o] & 255, Math.round(r * f * 255));
                     out[o + 1] = (byte) Math.max(out[o + 1] & 255, Math.round(g * f * 255));

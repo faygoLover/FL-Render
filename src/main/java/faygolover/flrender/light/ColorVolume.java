@@ -144,7 +144,11 @@ public final class ColorVolume {
             if (d == null) missing++;
             sections[cx + n * (cy + n * cz)] = d;
         }
-        boolean skipVanilla = FlRender.shaderPack();
+        // Пак со своим цветным светом (Just Colored, Rethinking Voxels...): ванильные источники он красит сам, а наши
+        // блоки (ХИС, блоки цвета) не знает и не освещает — их свет добавляем сами. Пак на ванильном свете (Insanity)
+        // и без пака — подкраска освещённого, как обычно.
+        boolean skipVanilla = faygolover.flrender.client.Oculus.coloredPack();
+        if (skipVanilla && blocks) packSources(sections, n, dyn);
         boolean staticStale = jobGeneration != SectionCache.generation() || jobOx != ox || jobOy != oy || jobOz != oz
                 || jobSize != size || jobSkipVanilla != skipVanilla || jobBlocks != blocks;
         if (missing == 0 && staticStale && !staticRunning) {
@@ -160,7 +164,7 @@ public final class ColorVolume {
             WORKER.execute(() -> {
                 try {
                     LightJobs.World w = LightJobs.world(fox, foy, foz, fs, sections);
-                    byte[] tint = blocks ? LightJobs.statics(w, sections, skipVanilla) : LightJobs.statics(w, empty(sections), false);
+                    byte[] tint = LightJobs.statics(w, sections, !blocks || skipVanilla);
                     STATIC_DONE.set(new StaticResult(w, tint));
                 } catch (Throwable t) {
                     FlRenderMod.LOGGER.error("FL Render: расчёт цветного света упал", t);
@@ -196,11 +200,24 @@ public final class ColorVolume {
         return tintReady;
     }
 
-    /** Секции без источников (только стены и небо) — когда цвет блоков выключен. */
-    private static SectionCache.Data[] empty(SectionCache.Data[] in) {
-        SectionCache.Data[] out = new SectionCache.Data[in.length];
-        for (int i = 0; i < in.length; i++) out[i] = new SectionCache.Data(in[i].att(), in[i].sky(), new int[0], new int[0]);
-        return out;
+    /** Сила света наших блоков-источников поверх пака со своим цветным светом. */
+    private static final float PACK_BLOCK_STRENGTH = 1.6f;
+
+    /** Блоки-источники модов (не ванильные) — как подвижные источники: свет добавляется сам. */
+    private static void packSources(SectionCache.Data[] sections, int n, List<LightJobs.Dyn> dyn) {
+        for (int cz = 0; cz < n; cz++) for (int cy = 0; cy < n; cy++) for (int cx = 0; cx < n; cx++) {
+            SectionCache.Data d = sections[cx + n * (cy + n * cz)];
+            if (d == null) continue;
+            for (int k = 0; k < d.srcPacked().length; k++) {
+                int p = d.srcPacked()[k];
+                if ((p >> 16 & 1) != 0) continue;
+                int local = p & 4095, level = p >> 12 & 15, rgb = d.srcRgb()[k];
+                double x = ox + (cx << 4) + (local & 15) + 0.5, y = oy + (cy << 4) + (local >> 8) + 0.5, z = oz + (cz << 4) + (local >> 4 & 15) + 0.5;
+                float top = Math.max(1, Math.max(rgb >> 16 & 255, Math.max(rgb >> 8 & 255, rgb & 255)));
+                dyn.add(new LightJobs.Dyn(x, y, z, level, (rgb >> 16 & 255) / top, (rgb >> 8 & 255) / top, (rgb & 255) / top,
+                        PACK_BLOCK_STRENGTH, 0, 0, 0, 0, false));
+            }
+        }
     }
 
     private static long hash(List<LightJobs.Dyn> dyn) {
