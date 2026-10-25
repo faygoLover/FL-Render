@@ -13,6 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -94,6 +96,12 @@ public final class WorldLight {
         projection = new Matrix4f(proj);
     }
 
+    /** Сила ночного зрения у камеры (0–1): с ним добавка света пересвечивает — её ослабляем. */
+    private static float nightVision(Minecraft mc, float partial) {
+        if (!(mc.getCameraEntity() instanceof LivingEntity e) || !e.hasEffect(MobEffects.NIGHT_VISION)) return 0.0f;
+        return Mth.clamp(GameRenderer.getNightVisionScale(e, partial), 0.0f, 1.0f);
+    }
+
     static void draw(float partial, boolean pack) {
         boolean blocks = TECHNIQUE.on();
         boolean held = HELD.on() && !faygolover.flrender.client.Oculus.coloredPack();
@@ -134,6 +142,7 @@ public final class WorldLight {
         shader.safeGetUniform("Boost").set(TINT_BOOST);
         shader.safeGetUniform("Day").set(Mth.clamp((darken - 0.2f) / 0.8f, 0.0f, 1.0f));
         shader.safeGetUniform("HandDepth").set(pack ? PACK_HAND_DEPTH : 0.0f);
+        shader.safeGetUniform("NightVision").set(nightVision(mc, partial));
         ColorVolume.bind();
         ScreenPass.fullscreen(layer, shader, false);
         ColorVolume.unbind();

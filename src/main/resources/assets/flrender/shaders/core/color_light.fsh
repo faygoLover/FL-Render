@@ -7,6 +7,7 @@
 //             pure colour x its share of the block light there: where it is the main light, the lit surface takes
 //             its colour like under an LED (other channels go dark), weaker where the sun shines.
 //   AddVol  - rgb: light of moving sources (effects, items in hand) x0.5; it adds light.
+// NightVision (0..1): the scene is already bright - the added light is weakened by up to 80%, the tint is not boosted.
 
 uniform sampler2D DepthSampler;
 uniform sampler2D SceneSampler;
@@ -21,6 +22,7 @@ uniform float Tint;
 uniform float Boost;
 uniform float Day;
 uniform float HandDepth;
+uniform float NightVision;
 
 in vec2 texCoord;
 
@@ -53,11 +55,11 @@ void main() {
     float amount = clamp(top * Tint * edge * (1.0 - t.a * Day * 0.85), 0.0, 1.0);
     if (amount > 0.004) {
         vec3 hue = t.rgb / max(top, 0.001);
-        col = mix(col, scene * hue * Boost, amount);
+        col = mix(col, scene * hue * mix(Boost, 1.0, NightVision), amount);
         changed = true;
     }
     if (HasAdd > 0.5) {
-        vec3 a = texture(AddVol, q).rgb * 2.0 * edge;
+        vec3 a = texture(AddVol, q).rgb * 2.0 * edge * (1.0 - 0.8 * NightVision);
         if (a.r + a.g + a.b > 0.003) {
             col += a * (scene * 1.2 + 0.2);
             changed = true;

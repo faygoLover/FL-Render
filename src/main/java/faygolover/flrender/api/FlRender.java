@@ -14,7 +14,8 @@ import java.util.Map;
  * <ul>
  *   <li>{@link #technique} — зарегистрировать свою технику (статически или в клиентской настройке мода);</li>
  *   <li>{@link #quality()} — общий пресет качества;</li>
- *   <li>{@link #shaderPack()} / {@link #shadowPass()} — Oculus.</li>
+ *   <li>{@link #shaderPack()} / {@link #shadowPass()} — Oculus;</li>
+ *   <li>{@link #flashlightLight()} — светит ли сейчас настоящий свет фонаря.</li>
  * </ul>
  * Проходы — в {@code faygolover.flrender.render}: LatePass, SceneDepth, WorldLight, PostFx, ScreenPass, CameraPose.
  */
@@ -42,6 +43,15 @@ public final class FlRender {
     /** Шейдерпак Oculus сейчас рисует мир. */
     public static boolean shaderPack() {
         return Oculus.shaderPack();
+    }
+
+    /**
+     * Настоящий свет фонаря Survivor's Arsenal сейчас включён: блоки освещаются при рисовании, сущности в луче — как
+     * у факела (техника {@code flrender.flashlight}, без шейдерпака, шейдер чанков Embeddium дописан). Экранному кругу
+     * фонаря тогда не нужно вытягивать цвет из темноты — только подчеркнуть пятно.
+     */
+    public static boolean flashlightLight() {
+        return faygolover.flrender.flashlight.Flashlight.enabled() && faygolover.flrender.flashlight.ChunkPatch.patched();
     }
 
     /** Сейчас идёт проход теней шейдерпака. */

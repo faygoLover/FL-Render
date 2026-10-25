@@ -1,6 +1,7 @@
 package faygolover.flrender.client;
 
 import faygolover.flrender.FlRenderMod;
+import faygolover.flrender.flashlight.Flashlight;
 import faygolover.flrender.render.FlShaders;
 import faygolover.flrender.render.LatePass;
 import faygolover.flrender.render.WorldLight;
@@ -20,6 +21,8 @@ public final class ClientSetup {
         MinecraftForge.EVENT_BUS.addListener(AutoDetect::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, LatePass::onRenderLevelStage);
         WorldLight.init();
+        Flashlight.init();
+        MinecraftForge.EVENT_BUS.addListener(Flashlight::onRenderLevelStage);
         if (ModList.get().isLoaded("embeddium")) {
             try {
                 faygolover.flrender.client.embeddium.EmbeddiumCompat.register();

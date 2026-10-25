@@ -177,6 +177,14 @@
       ]
     },
     {
+      "name": "NightVision",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0.0
+      ]
+    },
+    {
       "name": "Boost",
       "type": "float",
       "count": 1,

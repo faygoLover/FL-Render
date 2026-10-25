@@ -5,7 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "flrender.refmap.json",
   "client": [
-    "ClientLevelMixin"
+    "BlockEntityRenderDispatcherMixin",
+    "ClientLevelMixin",
+    "EntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

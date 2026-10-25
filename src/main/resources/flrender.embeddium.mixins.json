@@ -1,0 +1,14 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "faygolover.flrender.mixin.embeddium",
+  "plugin": "faygolover.flrender.mixin.EmbeddiumMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ChunkShaderInterfaceMixin",
+    "ShaderLoaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

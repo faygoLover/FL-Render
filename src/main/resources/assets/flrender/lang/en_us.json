@@ -15,5 +15,7 @@
   "flrender.technique.flrender.color_light": "Coloured light",
   "flrender.technique.flrender.color_light.tooltip": "Torches, lanterns, redstone, lava, fire, glow sticks and coloured light blocks tint what they light in their colour; anomalies and portals cast light in theirs. The light spreads block by block round you, goes round corners, not through walls. The picture only: the world's light levels don't change. Colours and more blocks: config/flrender_colors.json. Reach: medium 48 blocks, high 64, ultra 96.",
   "flrender.technique.flrender.held_light": "Coloured light from held items",
-  "flrender.technique.flrender.held_light.tooltip": "A torch, lantern, glow stick, lava bucket... in hand (yours and others'), dropped or flying lights the area round it in its colour. Off with a shader pack - the pack does it itself."
+  "flrender.technique.flrender.held_light.tooltip": "A torch, lantern, glow stick, lava bucket... in hand (yours and others'), dropped or flying lights the area round it in its colour. Off with a shader pack - the pack does it itself.",
+  "flrender.technique.flrender.flashlight": "Flashlight light",
+  "flrender.technique.flrender.flashlight.tooltip": "The Survivor's Arsenal flashlight (yours and others', up to 4) gives real light: its cone lights blocks as they are drawn, like a torch - colours show even in full darkness; people, mobs, mannequins and chests in the beam are lit as if a torch were next to them. It does not pass through walls, closed doors or slabs. The flashlight circle stays on top. Off with a shader pack - there only the flashlight circle."
 }
