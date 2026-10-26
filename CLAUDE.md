@@ -4,7 +4,7 @@
 Oculus, поздний проход, глубина сцены, цветной свет от эффектов, постэффекты, единые настройки качества.
 **С автором общаемся по-русски.** План и решения — `docs/00_plan.md`.
 
-## Что есть (0.2.0)
+## Что есть (0.3.0)
 - `api.FlRender` — `technique(modid, key, fromQuality)`, `quality()`, `shaderPack()`, `shadowPass()`.
   `Quality` LOW/MEDIUM/HIGH/ULTRA, `Toggle` AUTO/ON/OFF, `Technique.on()`.
 - `config.Settings` — `config/flrender.properties` (пресет, `quality_auto`, `fps_checked`, `detected`, `technique.<modid>.<key>`).
@@ -25,6 +25,16 @@ Oculus, поздний проход, глубина сцены, цветной �
   моды — `ColorTable.block/item`), эффекты — `WorldLight.provider` (точки, прямоугольники проёмов), предметы в руках /
   на земле / в полёте — `light.ItemLights`. Техники `flrender.color_light`, `flrender.held_light` (с паком не светит);
   ванильные блоки с паком не красятся (`shaders: false`).
+- **Свет фонаря SA** (0.3.0, `flashlight/`): техника `flrender.flashlight` (со «Среднего», с паком выключена).
+  `SaBeams` — лучи `sa_combat:flashlight` по логике SA (до 4, свои и чужие, MethodHandle на `FlashlightItem`);
+  `Beam` — форма (ядро/спад/ореол) и затухание, одна формула для шейдера и процессора; `Occupancy` — куб 96³ вокруг
+  камеры, байт на блок = 8 половинок (занята, если форма столкновения покрывает ≥ ¼; стекло/решётки — нет),
+  3D-текстура R8 с кольцевой адресацией на блоке 13; `ChunkPatch` — дописывает `sodium:blocks/block_layer_opaque`
+  (миксины `mixin/embeddium/*`, конфиг `flrender.embeddium.mixins.json`): текстура × цвет вершины × (карта света + фонарь),
+  проход по половинкам к лампе — сквозь стены нет; сущности и блоки-сущности — `EntityRendererMixin` /
+  `BlockEntityRenderDispatcherMixin` (уровень как у факела, до 14). `FlRender.flashlightLight()` — для RP Fixes
+  (круг SA тогда с малым усилением, `sa_flashlight_soft`). Обновление — на `AFTER_SKY`.
+- Ночное зрение ослабляет добавку цветного света (`color_light.fsh`, `NightVision`).
 - Шейдеры только ASCII (строгие драйверы AMD/Intel).
 
 ## Кто пользуется
@@ -35,4 +45,5 @@ ZA 0.1.41.0 (всё своё на LatePass/SceneDepth/WorldLight, техники
 
 ## Сборка
 `JAVA_HOME="C:/Program Files/Eclipse Adoptium/jdk-17.0.14.7-hotspot" ./gradlew.bat build` → `build/libs/flrender-<версия>.jar`.
-Embeddium для компиляции — `libs/embeddium-0.3.31+mc1.20.1.jar` (в git не идёт).
+Embeddium для компиляции — `libs/embeddium-0.3.31+mc1.20.1.jar` (в git не идёт). SA при сборке не нужен.
+Проверка фонаря в игре — зонд `Claude Code/FL Flash Probe` (файл `config/flashprobe.run` в инстансе включает прогон).
