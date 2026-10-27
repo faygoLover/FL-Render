@@ -140,7 +140,7 @@ final class SaBeams {
             intensity *= 0.85f;
         }
         return new Beam(o.x, o.y, o.z, aim.x, aim.y, aim.z, range, intensity,
-                cos(coreIn), cos(coreOut), cos(spillIn), cos(spillOut), cos(washIn), cos(washOut), spillW, washW);
+                cos(coreIn), cos(coreOut), cos(spillIn), cos(spillOut), cos(washIn), cos(washOut), spillW, washW, p.getId());
     }
 
     private static float cos(float deg) {

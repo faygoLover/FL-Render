@@ -10,6 +10,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -28,8 +33,11 @@ import java.util.Arrays;
 
 /**
  * Что задерживает луч фонаря, по половинкам блока: на блок — байт, бит на каждую из 8 половинок (x + 2y + 4z).
- * Половинка занята, если форма столкновения блока покрывает хотя бы четверть её объёма: целые блоки, плиты, ступени,
- * закрытые двери и люки свет держат; заборы, факелы, трава, цветы, стекло и решётки — нет.
+ * Целые блоки держат свет целиком. Двери, люки, калитки (тонкие пластины), плиты и ступени — половинки, которые их форма
+ * столкновения покрывает хотя бы на четверть. Остальные неполные блоки (тропинка, грядка, сундуки, мебель и тренажёры
+ * модов) — только почти целиком заполненные половинки: иначе их видимые грани лежат внутри «занятых» половинок и
+ * затеняют сами себя (чёрные края тропинок, чёрные грани моделей). Заборы, факелы, трава, цветы, стекло и решётки
+ * свет не держат.
  * <p>
  * Куб 96³ блоков вокруг камеры (6³ секций) — 3D-текстура с кольцевой адресацией (блок → его координата по модулю 96):
  * при движении грузятся только вошедшие секции. Шейдер чанков идёт по ней от поверхности к лампе
@@ -43,6 +51,8 @@ public final class Occupancy {
     /** Блок текстуры (выше тех, что знает GlStateManager, — его кэш не сбивается). */
     public static final int UNIT = 13;
 
+    /** Доля половинки, при которой она держит свет: двери, люки, калитки, плиты, ступени — и прочие неполные блоки. */
+    private static final double PLATE_FILL = 0.25, MODEL_FILL = 0.95;
     /** Секций пересобрать за кадр (первое заполнение ~0,3 с). */
     private static final int SCANS_PER_FRAME = 12;
     private static final int UPLOADS_PER_FRAME = 48;
@@ -171,6 +181,9 @@ public final class Occupancy {
             VoxelShape shape = s.getCollisionShape(level, pos);
             if (shape.isEmpty()) return 0;
             if (Block.isShapeFullBlock(shape)) return 0xFF;
+            boolean exact = b instanceof DoorBlock || b instanceof TrapDoorBlock || b instanceof FenceGateBlock
+                    || b instanceof SlabBlock || b instanceof StairBlock;
+            double need = 0.125 * (exact ? PLATE_FILL : MODEL_FILL);
             double[] vol = new double[8];
             for (AABB box : shape.toAabbs()) {
                 for (int i = 0; i < 8; i++) {
@@ -182,7 +195,7 @@ public final class Occupancy {
                 }
             }
             int m = 0;
-            for (int i = 0; i < 8; i++) if (vol[i] >= 0.125 * 0.25) m |= 1 << i;
+            for (int i = 0; i < 8; i++) if (vol[i] >= need) m |= 1 << i;
             return m;
         } catch (RuntimeException e) {
             return s.canOcclude() ? 0xFF : 0;
@@ -257,8 +270,9 @@ public final class Occupancy {
     }
 
     /**
-     * Свободен ли путь от точки к лампе: шаг по половинкам блоков, как в шейдере. Свою начальную половинку не считает;
-     * {@code skipOwnBlock} — не считать и весь блок начальной точки (блок-сущность стоит в своём блоке).
+     * Свободен ли путь от точки к лампе: шаг по половинкам блоков, как в шейдере. Свою начальную половинку не считает,
+     * а если она занята (точка на грани неполного блока) — весь свой блок; {@code skipOwnBlock} — весь блок всегда
+     * (блок-сущность стоит в своём блоке).
      */
     static boolean clear(double fx, double fy, double fz, double tx, double ty, double tz, boolean skipOwnBlock) {
         double ax = fx * 2, ay = fy * 2, az = fz * 2;
@@ -270,6 +284,7 @@ public final class Occupancy {
         dz /= len;
         int cx = (int) Math.floor(ax), cy = (int) Math.floor(ay), cz = (int) Math.floor(az);
         int ownX = cx >> 1, ownY = cy >> 1, ownZ = cz >> 1;
+        skipOwnBlock |= solid(cx, cy, cz);
         int stx = dx > 0 ? 1 : dx < 0 ? -1 : 0, sty = dy > 0 ? 1 : dy < 0 ? -1 : 0, stz = dz > 0 ? 1 : dz < 0 ? -1 : 0;
         double ix = 1.0 / Math.max(Math.abs(dx), 1.0e-5), iy = 1.0 / Math.max(Math.abs(dy), 1.0e-5), iz = 1.0 / Math.max(Math.abs(dz), 1.0e-5);
         double frx = ax - Math.floor(ax), fry = ay - Math.floor(ay), frz = az - Math.floor(az);

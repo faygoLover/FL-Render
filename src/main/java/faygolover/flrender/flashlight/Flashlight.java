@@ -34,6 +34,11 @@ public final class Flashlight {
     static final float R = 1.0f, G = 0.96f, B = 0.88f;
     /** Слабее этого свет сущность не меняет. */
     private static final float ENTITY_MIN = 0.02f;
+    /**
+     * Тот, у кого фонарь в руке: отсвет от лампы — рука и предмет от первого лица, сам игрок от третьего (иначе в полной
+     * тьме они чёрные, хотя рядом горит фонарь).
+     */
+    private static final int HOLDER_LEVEL = 7;
     /** Самое большее для сущности — как факел в соседнем блоке. */
     private static final int ENTITY_MAX_LEVEL = 14;
 
@@ -108,7 +113,11 @@ public final class Flashlight {
     public static int entityLight(Entity e, float partial) {
         if (!active) return -1;
         Vec3 p = e.getPosition(partial);
-        return lightAt(p.x, p.y + e.getBbHeight() * 0.5, p.z, false);
+        int level = lightAt(p.x, p.y + e.getBbHeight() * 0.5, p.z, false);
+        for (Beam b : BEAMS) {
+            if (b.owner() == e.getId()) return Math.max(level, HOLDER_LEVEL);
+        }
+        return level;
     }
 
     /** То же для блока-сущности (сундук, табличка): середина блока, свой блок свет не держит. */

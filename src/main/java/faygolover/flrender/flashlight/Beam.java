@@ -5,11 +5,12 @@ import net.minecraft.util.Mth;
 /**
  * Один луч фонаря на этот кадр: откуда (мир), куда (единичный вектор), дальность, сила и форма пятна —
  * три вложенных конуса как у Survivor's Arsenal (ядро, спад, широкий ореол; косинусы углов).
- * Свет в точке — {@link #amount}: та же формула, что в шейдере чанков ({@code ChunkPatch}).
+ * Свет в точке — {@link #amount}: та же формула, что в шейдере чанков ({@code ChunkPatch}). {@code owner} — id сущности,
+ * у которой фонарь в руке.
  */
 public record Beam(double x, double y, double z, double dx, double dy, double dz, float range, float intensity,
                    float coreIn, float coreOut, float spillIn, float spillOut, float washIn, float washOut,
-                   float spillWeight, float washWeight) {
+                   float spillWeight, float washWeight, int owner) {
 
     /** Сила света вблизи (до затухания): около 1 — как от факела рядом. */
     public static final float GAIN = 1.6f;

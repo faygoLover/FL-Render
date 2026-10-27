@@ -76,7 +76,8 @@ public final class ChunkPatch {
                 return ((v >> bit) & 1) != 0;
             }
 
-            // Walk the half-block grid from the surface to the lamp; its own starting half is not counted.
+            // Walk the half-block grid from the surface to the lamp; its own starting half is not counted, and when that
+            // half is occupied (a face of a partial block: door, slab...) the whole own block is not counted.
             float fl_visible(vec3 from, vec3 lamp) {
                 vec3 a = (u_FlCamFrac + from) * 2.0;
                 vec3 d = (u_FlCamFrac + lamp) * 2.0 - a;
@@ -86,6 +87,8 @@ public final class ChunkPatch {
                 }
                 vec3 dir = d / len;
                 ivec3 cell = ivec3(floor(a));
+                bool ownSolid = fl_solid(cell);
+                ivec3 own = cell >> 1;
                 ivec3 st = ivec3(sign(dir));
                 vec3 inv = 1.0 / max(abs(dir), vec3(1.0e-5));
                 vec3 fr = a - floor(a);
@@ -107,6 +110,9 @@ public final class ChunkPatch {
                     }
                     if (t > len - 1.0) {
                         return 1.0;
+                    }
+                    if (ownSolid && all(equal(cell >> 1, own))) {
+                        continue;
                     }
                     if (fl_solid(cell)) {
                         return 0.0;
