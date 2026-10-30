@@ -21,6 +21,27 @@ co = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(co)
 co.MODS = Path(os.environ['APPDATA']) / 'ElyPrismLauncher/instances/DEP_S5_rev/minecraft/mods'
 
+# Рисуем блок включённым: свойства самого яркого состояния из выгрузки (поворот — как обычно, лицом к нам).
+ORIENT = {'facing', 'horizontal_facing', 'rotation', 'axis', 'direction', 'face', 'attach_face', 'attachment', 'hanging'}
+LIT = {}
+_guess = co.guess_state
+
+
+def lit_guess(props):
+    st = _guess(props)
+    for k, v in LIT.items():
+        if k in props and v in props[k] and k not in ORIENT:
+            st[k] = v
+    return st
+
+
+co.guess_state = lit_guess
+
+
+def parse_state(s):
+    m = re.search(r'\[(.*)\]$', s or '')
+    return dict(kv.split('=', 1) for kv in m.group(1).split(',') if '=' in kv) if m else {}
+
 DYES = {
     'white': '#F4F4F4', 'orange': '#FF8A1E', 'magenta': '#E040E0', 'light_blue': '#5AC8FF', 'yellow': '#FFE030',
     'lime': '#8CFF30', 'pink': '#FF7AB4', 'gray': '#8C8C8C', 'light_gray': '#C8C8C8', 'cyan': '#20E0E0',
@@ -53,7 +74,12 @@ def from_image(img):
     if len(a) < 20:
         return ''
     lum = a @ np.array([0.299, 0.587, 0.114], np.float32)
-    top = a[lum >= np.quantile(lum, 0.9)]
+    mxp = a.max(axis=1)
+    satp = (mxp - a.min(axis=1)) / np.maximum(mxp, 1)
+    # Светящаяся часть — яркая и цветная: сначала яркие (верхние 30 %), среди них — самые цветные (верхняя треть).
+    bright = lum >= np.quantile(lum, 0.7)
+    score = np.where(bright, lum * (0.25 + satp), -1)
+    top = a[score >= np.quantile(score[bright], 0.66)] if bright.sum() >= 6 else a[bright]
     c = top.mean(axis=0)
     mx, mn = c.max(), c.min()
     if mx < 50:
@@ -90,6 +116,8 @@ def main():
         ns, p = co.split(bid)
         key = f'block.{ns}.{p}'
         img, kind = None, 'none'
+        LIT.clear()
+        LIT.update(parse_state(d.get('best_state')))
         if not d['invisible']:
             try:
                 img, kind, _ = co.render_block(res, bid)
@@ -107,9 +135,13 @@ def main():
         elif bid in BY_ID:
             prop, src = BY_ID[bid], 'по названию'
         else:
-            m = re.search(r'(light_blue|light_gray|white|orange|magenta|yellow|lime|pink|gray|cyan|purple|blue|brown|green|red|black)', p)
+            m = re.search(r'(?:^|_)(light_blue|light_gray|white|orange|magenta|yellow|lime|pink|gray|cyan|purple|blue|brown|green|red|black)(?:_|$)', p)
             if 'soul' in p:
                 prop, src = SOUL, 'по названию (душ)'
+            elif 'redstone' in p and 'lamp' not in p:
+                prop, src = '#FF2A1A', 'по названию (редстоун)'
+            elif re.search(r'(?:^|_)(candles?|torch|campfire|fire|brazier|candelabra|kerosene|oil_lamp|fireplace)(?:_|$)', p):
+                prop, src = FLAME, 'по названию (огонь)'
             elif m and m.group(1) not in ('white', 'gray', 'light_gray', 'black'):
                 prop, src = DYES[m.group(1)], 'по названию (цвет)'
             elif img is not None and (c := from_image(img)) != '':
