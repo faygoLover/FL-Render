@@ -48,21 +48,6 @@ final class LightJobs {
         return new World(ox, oy, oz, hs, vs, att, sky, blk);
     }
 
-    /** Кусок мира (для подвижных источников — малый куб у камеры внутри большого объёма). Только потери света. */
-    static World sub(World w, int ox, int oy, int oz, int hs, int vs) {
-        int cells = hs * vs * hs;
-        byte[] att = new byte[cells];
-        java.util.Arrays.fill(att, (byte) 15);
-        for (int z = 0; z < hs; z++) for (int y = 0; y < vs; y++) {
-            int wz = oz + z - w.oz(), wy = oy + y - w.oy();
-            if (wz < 0 || wz >= w.hs() || wy < 0 || wy >= w.vs()) continue;
-            int x0 = Math.max(0, w.ox() - ox), x1 = Math.min(hs, w.ox() + w.hs() - ox);
-            if (x1 <= x0) continue;
-            System.arraycopy(w.att(), (ox + x0 - w.ox()) + w.hs() * (wy + w.vs() * wz), att, x0 + hs * (y + vs * z), x1 - x0);
-        }
-        return new World(ox, oy, oz, hs, vs, att, null, null);
-    }
-
     /**
      * Статический объём: RGBA (rgb — чистый цвет блоков-источников, умноженный на их долю в ванильном свете блока:
      * где источник главный — 1, «светодиод»; a — небесный свет). {@code none} — без источников (только небо).
@@ -93,6 +78,33 @@ final class LightJobs {
             }
         }
         return out;
+    }
+
+    /** Сторона кирпича подкраски: секция 16 и по блоку соседей с каждой стороны (для плавной фильтрации на стыках). */
+    static final int BRICK = 18;
+
+    /**
+     * Кирпич подкраски одной секции (разреженный объём, 30.10): мир — эта секция и 26 соседних ({@code near[dx + 3 *
+     * (dy + 3 * dz)]}, d = 0..2), свет растекается от источников всех 27. Результат — RGBA {@link #BRICK}³ (как у
+     * {@link #statics}) или null, если цвета в нём нет.
+     */
+    static byte[] brick(SectionCache.Data[] near) {
+        World w = world(0, 0, 0, 48, 48, near);
+        byte[] full = statics(w, near, false);
+        byte[] out = new byte[BRICK * BRICK * BRICK * 4];
+        boolean any = false;
+        for (int z = 0; z < BRICK; z++) for (int y = 0; y < BRICK; y++) {
+            int src = (15 + 48 * ((15 + y) + 48 * (15 + z))) * 4, dst = BRICK * (y + BRICK * z) * 4;
+            System.arraycopy(full, src, out, dst, BRICK * 4);
+            if (!any) for (int i = 0; i < BRICK; i++) {
+                int o = dst + i * 4;
+                if (out[o] != 0 || out[o + 1] != 0 || out[o + 2] != 0) {
+                    any = true;
+                    break;
+                }
+            }
+        }
+        return any ? out : null;
     }
 
     /** Подвижные источники: RGBA (rgb — добавка света ×0.5, a — не используется). */

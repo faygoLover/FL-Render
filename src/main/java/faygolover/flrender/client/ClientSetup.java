@@ -19,6 +19,8 @@ public final class ClientSetup {
         modBus.addListener(FlShaders::onRegisterShaders);
         modBus.addListener((FMLClientSetupEvent e) -> e.enqueueWork(AutoDetect::onStartup));
         MinecraftForge.EVENT_BUS.addListener(AutoDetect::onClientTick);
+        MinecraftForge.EVENT_BUS.addListener(faygolover.flrender.light.ColorVolume::onChunkLoad);
+        MinecraftForge.EVENT_BUS.addListener(faygolover.flrender.light.ColorVolume::onChunkUnload);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, LatePass::onRenderLevelStage);
         WorldLight.init();
         Flashlight.init();

@@ -127,7 +127,15 @@
       ]
     },
     {
-      "name": "VolOrigin",
+      "name": "IndexVol",
+      "type": "int",
+      "count": 1,
+      "values": [
+        7
+      ]
+    },
+    {
+      "name": "IndexOrigin",
       "type": "float",
       "count": 3,
       "values": [
@@ -137,13 +145,40 @@
       ]
     },
     {
-      "name": "VolSize",
+      "name": "IndexSize",
       "type": "float",
       "count": 3,
       "values": [
-        64.0,
-        64.0,
-        64.0
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "AtlasBricks",
+      "type": "float",
+      "count": 3,
+      "values": [
+        16.0,
+        8.0,
+        2.0
+      ]
+    },
+    {
+      "name": "Range",
+      "type": "float",
+      "count": 2,
+      "values": [
+        128.0,
+        48.0
+      ]
+    },
+    {
+      "name": "HasTint",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0.0
       ]
     },
     {
@@ -159,10 +194,8 @@
     {
       "name": "AddSize",
       "type": "float",
-      "count": 3,
+      "count": 1,
       "values": [
-        64.0,
-        64.0,
         64.0
       ]
     },

@@ -19,9 +19,11 @@
   "flrender.technique.flrender.flashlight": "Flashlight light",
   "flrender.technique.flrender.flashlight.tooltip": "The Survivor's Arsenal flashlight (yours and others', up to 4) gives real light: its cone lights blocks as they are drawn, like a torch - colours show even in full darkness; people, mobs, mannequins and chests in the beam are lit as if a torch were next to them. It does not pass through walls, closed doors or slabs. The flashlight circle stays on top. Off with a shader pack - there only the flashlight circle.",
   "flrender.option.color_range": "Coloured light range",
-  "flrender.option.color_range.tooltip": "How far the colour of light sources (torches, lamps, glow sticks) is shown.\nAs render distance - as far as the light itself (capped by quality: medium ~90, high ~120, ultra ~150 blocks).\nLower - for a weak computer: less memory and work, the colour ends closer, but softly.",
+  "flrender.option.color_range.tooltip": "How far the colour of light sources (torches, lamps, glow sticks) is shown, in chunks.\nAs render distance - as far as the light itself (capped by quality: medium 12, high 24, ultra 32 chunks; 2-4 sections above and below you).\nMemory depends on how many coloured sources are near, not on the range; lower - for a weak computer, the colour ends softly.",
   "flrender.color_range.render": "As render distance",
-  "flrender.color_range.far": "128 blocks",
-  "flrender.color_range.medium": "64 blocks",
-  "flrender.color_range.near": "32 blocks"
+  "flrender.color_range.c12": "12 chunks",
+  "flrender.color_range.c8": "8 chunks",
+  "flrender.color_range.c6": "6 chunks",
+  "flrender.color_range.c4": "4 chunks",
+  "flrender.color_range.c2": "2 chunks"
 }

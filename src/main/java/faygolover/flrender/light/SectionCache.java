@@ -67,10 +67,55 @@ final class SectionCache {
     static Data build(ClientLevel level, int sx, int sy, int sz) {
         long k = SectionPos.asLong(sx, sy, sz);
         Data d = scan(level, sx, sy, sz);
-        CACHE.put(k, d);
+        Data old = CACHE.put(k, d);
         DIRTY.remove(k);
-        generation++;
+        if (old == null || !same(old, d)) generation++;
         return d;
+    }
+
+    /** Есть ли секция в кэше (хоть и устаревшая). */
+    static boolean cached(long k) {
+        return CACHE.containsKey(k);
+    }
+
+    static boolean isDirty(long k) {
+        return DIRTY.contains(k);
+    }
+
+    static Data peek(long k) {
+        return CACHE.get(k);
+    }
+
+    static void remove(long k) {
+        CACHE.remove(k);
+        DIRTY.remove(k);
+    }
+
+    static it.unimi.dsi.fastutil.longs.LongSet keys() {
+        return CACHE.keySet();
+    }
+
+    /** Те же данные (пересборка без перемен — например, перерисовка чанка модом динамического света). */
+    static boolean same(Data a, Data b) {
+        return a == b || java.util.Arrays.equals(a.att(), b.att()) && java.util.Arrays.equals(a.blk(), b.blk())
+                && java.util.Arrays.equals(a.sky(), b.sky()) && java.util.Arrays.equals(a.srcPacked(), b.srcPacked())
+                && java.util.Arrays.equals(a.srcRgb(), b.srcRgb());
+    }
+
+    /**
+     * Быстро, по палитре секции: могут ли в ней быть цветные источники. false — точно нет (или чанк не загружен);
+     * true — надо собрать секцию и посмотреть.
+     */
+    static boolean mayHaveSources(ClientLevel level, int sx, int sy, int sz) {
+        if (sy < level.getMinSection() || sy >= level.getMaxSection()) return false;
+        LevelChunk chunk = level.getChunkSource().getChunk(sx, sz, false);
+        if (chunk == null) return false;
+        LevelChunkSection sec = chunk.getSection(level.getSectionIndexFromSectionY(sy));
+        return sec != null && !sec.hasOnlyAir() && sec.maybeHas(st -> ColorTable.of(st) != null);
+    }
+
+    static boolean loaded(ClientLevel level, int sx, int sz) {
+        return level.getChunkSource().getChunk(sx, sz, false) != null;
     }
 
     /** Убрать секции вне коробки (в секциях) — память. */
