@@ -115,7 +115,7 @@ RULES = [
     ('redstone', r'redstone', r'редстоун'),
     ('candle', r'candles?|candle_holder|candlestick|candelabra|skull_candle', r'свеч|подсвечн'),
     ('fire', r'torch|campfire|fire_pit|fire|brazier|bonfire|fireplace', r'факел|костёр|костер|кострищ|жаровн|камин|огонь'),
-    ('fire', r'stove|furnace|oven|firebox|brew_oven|smoker', r'печь|плита|топка|пивоварн'),
+    ('fire', r'stove|furnace|oven|firebox|brew_oven|smoker', r'печь|кухонная плита|чайная плита|топка|пивоварн'),
     ('kerosene', r'kerosene|oil_lamp|oil|lantern', r'керосин|масля'),
     ('fluorescent', r'fluo|flourecent|florescent|fluorescent|tube_light|tube', r'люминесц|флюоресц|лампа дневного'),
     (None, r'flood\w*|spot\w*|work_light|searchlight|projector|reflector|floodlamp', r'прожектор|рабоч'),

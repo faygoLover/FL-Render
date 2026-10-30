@@ -158,6 +158,9 @@ def main():
             src = 'слабый свет — цвет не заметен'
         else:
             preset, src = P.classify(bid, name, ns)
+            # Цвет, который задаёт сам мод (ХИС, цветной свет S5 Glow Sticks): он точнее правила по названию.
+            if 'flrender' in d and ns in ('glow_sticks', 's5glow') and bid not in P.BY_ID:
+                preset, src = from_flrender(d['flrender']), 'цвет задан модом'
             if preset == '':
                 preset = None
                 if diff not in ('', None):
