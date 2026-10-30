@@ -32,6 +32,8 @@ final class SectionCache {
     private static final Data UNLOADED = new Data(new byte[4096], new byte[4096], new byte[4096], NO_INTS, NO_INTS);
 
     private static final Long2ObjectOpenHashMap<Data> CACHE = new Long2ObjectOpenHashMap<>();
+    /** Почти белые источники не считать (качество ниже «Высокого»). */
+    static volatile boolean skipSubtle;
     private static final LongOpenHashSet DIRTY = new LongOpenHashSet();
     /** Растёт при каждой смене данных секции — по нему видно, что объём пора пересчитать. */
     private static int generation;
@@ -165,7 +167,7 @@ final class SectionCache {
             p.set(x0 + x, y0 + y, z0 + z);
             att[i] = (byte) Math.min(15, Math.max(0, s.getLightBlock(level, p)));
             ColorTable.Entry e = ColorTable.of(s);
-            if (e == null) continue;
+            if (e == null || skipSubtle && ColorTable.subtle(e)) continue;
             int lv = ColorTable.level(s, e);
             if (lv <= 0) continue;
             packed.add(i | lv << 12 | (e.withShaders() ? 0 : 1 << 16));

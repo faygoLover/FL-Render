@@ -680,7 +680,7 @@
    "color": "#E1D5A3"
   },
   "glow_sticks:creative_glow_stick_black": {
-   "color": "#000000"
+   "color": "none"
   },
   "glow_sticks:creative_glow_stick_blue": {
    "color": "#1515EA"
@@ -776,7 +776,7 @@
    "color": "#E1D5A3"
   },
   "glow_sticks:glow_stick_black": {
-   "color": "#000000"
+   "color": "none"
   },
   "glow_sticks:glow_stick_blue": {
    "color": "#1515EA"

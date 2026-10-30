@@ -86,6 +86,12 @@ public final class ColorTable {
 
     /** Источник для состояния блока, если оно светит: [r, g, b] и уровень. Null — не цветной источник. */
     @Nullable
+    /** Почти белый цвет (насыщенность меньше 15 %): подкраска едва заметна. */
+    public static boolean subtle(Entry e) {
+        float mx = Math.max(e.r(), Math.max(e.g(), e.b())), mn = Math.min(e.r(), Math.min(e.g(), e.b()));
+        return mx <= 0 || (mx - mn) / mx < 0.15f;
+    }
+
     public static Entry of(BlockState state) {
         return blocks().get(state.getBlock());
     }

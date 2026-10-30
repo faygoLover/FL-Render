@@ -56,26 +56,36 @@ final class LightJobs {
         int hs = w.hs(), vs = w.vs(), nh = hs >> 4, nv = vs >> 4, cells = w.cells();
         byte[] out = new byte[cells * 4];
         for (int i = 0; i < cells; i++) out[i * 4 + 3] = (byte) Math.min(255, (w.sky()[i] & 255) * 17);
-        Flood flood = new Flood(w);
+        if (none) return out;
+        // Источники одного цвета растекаются вместе, одним проходом (30.10): в каждом блоке берётся лучший уровень —
+        // то же, что максимум отдельных растеканий, но сплошной объём из сотен блоков света стоит как один источник.
+        it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap<it.unimi.dsi.fastutil.ints.IntArrayList[]> byColour =
+                new it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap<>();
         for (int cz = 0; cz < nh; cz++) for (int cy = 0; cy < nv; cy++) for (int cx = 0; cx < nh; cx++) {
             SectionCache.Data d = sections[cx + nh * (cy + nv * cz)];
             for (int k = 0; k < d.srcPacked().length; k++) {
                 int p = d.srcPacked()[k];
-                if (none) continue;
                 int local = p & 4095, level = p >> 12 & 15;
                 int lx = local & 15, lz = local >> 4 & 15, ly = local >> 8;
-                int start = (cx << 4) + lx + hs * ((cy << 4) + ly + vs * ((cz << 4) + lz));
-                int rgb = d.srcRgb()[k];
-                // Цвет как есть: оттенок шейдер берёт сам (rgb / max), а яркость цвета — сила подкраски (тёмный — слабее).
-                float r = (rgb >> 16 & 255) / 255f, g = (rgb >> 8 & 255) / 255f, b = (rgb & 255) / 255f;
-                flood.run(new int[]{start}, level, (cell, lv) -> {
-                    float f = Math.min(1f, lv / (float) Math.max(1, w.blk()[cell] & 255));
-                    int o = cell * 4;
-                    out[o] = (byte) Math.max(out[o] & 255, Math.round(r * f * 255));
-                    out[o + 1] = (byte) Math.max(out[o + 1] & 255, Math.round(g * f * 255));
-                    out[o + 2] = (byte) Math.max(out[o + 2] & 255, Math.round(b * f * 255));
-                });
+                var lists = byColour.computeIfAbsent(d.srcRgb()[k], c -> new it.unimi.dsi.fastutil.ints.IntArrayList[]{
+                        new it.unimi.dsi.fastutil.ints.IntArrayList(), new it.unimi.dsi.fastutil.ints.IntArrayList()});
+                lists[0].add((cx << 4) + lx + hs * ((cy << 4) + ly + vs * ((cz << 4) + lz)));
+                lists[1].add(level);
             }
+        }
+        Flood flood = new Flood(w);
+        for (var e : byColour.int2ObjectEntrySet()) {
+            int rgb = e.getIntKey();
+            // Цвет как есть: оттенок шейдер берёт сам (rgb / max), а яркость цвета — сила подкраски (тёмный — слабее).
+            float r = (rgb >> 16 & 255) / 255f, g = (rgb >> 8 & 255) / 255f, b = (rgb & 255) / 255f;
+            if (r <= 0 && g <= 0 && b <= 0) continue;
+            flood.run(e.getValue()[0].toIntArray(), e.getValue()[1].toIntArray(), (cell, lv) -> {
+                float f = Math.min(1f, lv / (float) Math.max(1, w.blk()[cell] & 255));
+                int o = cell * 4;
+                out[o] = (byte) Math.max(out[o] & 255, Math.round(r * f * 255));
+                out[o + 1] = (byte) Math.max(out[o + 1] & 255, Math.round(g * f * 255));
+                out[o + 2] = (byte) Math.max(out[o + 2] & 255, Math.round(b * f * 255));
+            });
         }
         return out;
     }
@@ -83,18 +93,34 @@ final class LightJobs {
     /** Сторона кирпича подкраски: секция 16 и по блоку соседей с каждой стороны (для плавной фильтрации на стыках). */
     static final int BRICK = 18;
 
+    /** Сторона кластера кирпичей в секциях: кластер считается одним заданием (мир — кластер и секция вокруг). */
+    static final int CLUSTER = 3;
+    /** Сторона мира кластера в секциях. */
+    static final int CLUSTER_WORLD = CLUSTER + 2;
+
     /**
-     * Кирпич подкраски одной секции (разреженный объём, 30.10): мир — эта секция и 26 соседних ({@code near[dx + 3 *
-     * (dy + 3 * dz)]}, d = 0..2), свет растекается от источников всех 27. Результат — RGBA {@link #BRICK}³ (как у
-     * {@link #statics}) или null, если цвета в нём нет.
+     * Кирпичи подкраски кластера (30.10): мир — {@link #CLUSTER_WORLD}³ секций ({@code near[x + n * (y + n * z)]}),
+     * свет растекается один раз на весь кластер. {@code targets} — секции кластера (0..CLUSTER−1 по осям, упаковано
+     * {@code x | y << 4 | z << 8}); результат по каждой — RGBA {@link #BRICK}³ или null, если цвета в ней нет.
      */
-    static byte[] brick(SectionCache.Data[] near) {
-        World w = world(0, 0, 0, 48, 48, near);
+    static byte[][] bricks(SectionCache.Data[] near, int[] targets) {
+        int n = CLUSTER_WORLD, size = n * 16;
+        World w = world(0, 0, 0, size, size, near);
         byte[] full = statics(w, near, false);
+        byte[][] res = new byte[targets.length][];
+        for (int i = 0; i < targets.length; i++) {
+            int t = targets[i];
+            res[i] = brick(full, size, 16 * (1 + (t & 15)), 16 * (1 + (t >> 4 & 15)), 16 * (1 + (t >> 8 & 15)));
+        }
+        return res;
+    }
+
+    /** Вырезать кирпич секции с углом (x0, y0, z0) из посчитанного мира стороной {@code size}. */
+    private static byte[] brick(byte[] full, int size, int x0, int y0, int z0) {
         byte[] out = new byte[BRICK * BRICK * BRICK * 4];
         boolean any = false;
         for (int z = 0; z < BRICK; z++) for (int y = 0; y < BRICK; y++) {
-            int src = (15 + 48 * ((15 + y) + 48 * (15 + z))) * 4, dst = BRICK * (y + BRICK * z) * 4;
+            int src = ((x0 - 1) + size * ((y0 - 1 + y) + size * (z0 - 1 + z))) * 4, dst = BRICK * (y + BRICK * z) * 4;
             System.arraycopy(full, src, out, dst, BRICK * 4);
             if (!any) for (int i = 0; i < BRICK; i++) {
                 int o = dst + i * 4;
@@ -218,6 +244,15 @@ final class LightJobs {
         }
 
         void run(int[] seeds, int level, Visit visit) {
+            int[] levels = new int[seeds.length];
+            java.util.Arrays.fill(levels, level);
+            run(seeds, levels, visit);
+        }
+
+        /** Растекание от многих семян со своими уровнями (один цвет). */
+        void run(int[] seeds, int[] levels, Visit visit) {
+            int level = 0;
+            for (int l : levels) level = Math.max(level, Math.min(15, l));
             run++;
             if (run == Integer.MAX_VALUE) {
                 java.util.Arrays.fill(stamp, 0);
@@ -225,7 +260,7 @@ final class LightJobs {
             }
             sc.run = run;
             java.util.Arrays.fill(counts, 0);
-            for (int s : seeds) push(s, level);
+            for (int i = 0; i < seeds.length; i++) if (levels[i] > 0) push(seeds[i], Math.min(15, levels[i]));
             int s2 = hs * vs;
             for (int lv = level; lv >= 1; lv--) {
                 for (int q = 0; q < counts[lv]; q++) {

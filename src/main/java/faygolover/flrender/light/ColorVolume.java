@@ -63,7 +63,7 @@ public final class ColorVolume {
         return t;
     });
 
-    private record BrickJob(long key, int version, SectionCache.Data[] near) {
+    private record BrickJob(long[] keys, int[] versions, int[] local, SectionCache.Data[] near) {
     }
 
     private record BrickResult(long key, int version, byte[] data) {
@@ -83,7 +83,7 @@ public final class ColorVolume {
     private static final LongOpenHashSet KNOWN = new LongOpenHashSet();
     /** Секции с цветными источниками. */
     private static final LongOpenHashSet LIT = new LongOpenHashSet();
-    /** Сколько секций с источниками в кубе 3³ / 5³ вокруг: кирпич может быть / данные секции нужны кирпичам. */
+    /** Сколько секций с источниками в кубе 3³ / 7³ вокруг: кирпич может быть / данные секции нужны кирпичам (мир кластера). */
     private static final Long2IntOpenHashMap NEAR1 = new Long2IntOpenHashMap(), NEAR2 = new Long2IntOpenHashMap();
     /** Проверить (загрузка, грязная). */
     private static final LongLinkedOpenHashSet CHECK = new LongLinkedOpenHashSet();
@@ -194,9 +194,9 @@ public final class ColorVolume {
 
     private static int buildsPerFrame(Quality q) {
         return switch (q) {
-            case LOW, MEDIUM -> 8;
-            case HIGH -> 16;
-            case ULTRA -> 24;
+            case LOW, MEDIUM -> 16;
+            case HIGH -> 32;
+            case ULTRA -> 48;
         };
     }
 
@@ -230,6 +230,13 @@ public final class ColorVolume {
         if (level == null) return false;
         Quality q = FlRender.quality();
         frames++;
+        // На «Низком» и «Среднем» почти белые источники (люминесцентные, светодиоды, прожекторы) не красят: на экране
+        // разница в несколько процентов, а стоят они как цветные.
+        boolean skipSubtle = !q.atLeast(Quality.HIGH);
+        if (skipSubtle != SectionCache.skipSubtle) {
+            SectionCache.skipSubtle = skipSubtle;
+            resetAll();
+        }
 
         // Пак со своим цветным светом (Just Colored, Rethinking Voxels...): ванильные источники он красит сам, а наши
         // блоки (ХИС, блоки цвета) не знает и не освещает — их свет добавляем сами. Пак на ванильном свете (Insanity)
@@ -354,7 +361,7 @@ public final class ColorVolume {
         else LIT.remove(k);
         int d = lit ? 1 : -1;
         int x = SectionPos.x(k), y = SectionPos.y(k), z = SectionPos.z(k);
-        for (int dz = -2; dz <= 2; dz++) for (int dy = -2; dy <= 2; dy++) for (int dx = -2; dx <= 2; dx++) {
+        for (int dz = -3; dz <= 3; dz++) for (int dy = -3; dy <= 3; dy++) for (int dx = -3; dx <= 3; dx++) {
             long n = SectionPos.asLong(x + dx, y + dy, z + dz);
             if (NEAR2.addTo(n, d) + d <= 0) NEAR2.remove(n);
             if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && Math.abs(dz) <= 1 && NEAR1.addTo(n, d) + d <= 0) NEAR1.remove(n);
@@ -416,48 +423,70 @@ public final class ColorVolume {
         return budget;
     }
 
-    /** Отдать в фон кирпичи из очереди — ближние первыми. */
+    /**
+     * Отдать в фон кирпичи из очереди — кластерами {@link LightJobs#CLUSTER}³ секций (один расчёт на кластер вместо
+     * своего на каждую секцию), ближние кластеры первыми.
+     */
     private static int submitBricks(int budget) {
         if (bricksRunning || PENDING.isEmpty()) return budget;
-        LongArrayList order = new LongArrayList(PENDING);
-        order.sort((long a, long b) -> Integer.compare(dist(a), dist(b)));
-        List<BrickJob> jobs = new ArrayList<>();
-        for (int i = 0; i < order.size() && jobs.size() < 48; i++) {
-            long t = order.getLong(i);
-            if (!inRange(t)) {
-                PENDING.remove(t);
+        int c = LightJobs.CLUSTER, n = LightJobs.CLUSTER_WORLD;
+        it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap<LongArrayList> clusters = new it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap<>();
+        LongArrayList drop = new LongArrayList();
+        for (long t : PENDING) {
+            if (!inRange(t) || NEAR1.get(t) <= 0) {
+                drop.add(t);
                 continue;
             }
+            long key = SectionPos.asLong(Math.floorDiv(SectionPos.x(t), c), Math.floorDiv(SectionPos.y(t), c), Math.floorDiv(SectionPos.z(t), c));
+            clusters.computeIfAbsent(key, k -> new LongArrayList()).add(t);
+        }
+        for (long t : drop) {
+            PENDING.remove(t);
             if (NEAR1.get(t) <= 0) {
-                PENDING.remove(t);
                 freeBrick(t);
                 DONE.put(t, -1);
-                continue;
             }
-            SectionCache.Data[] near = new SectionCache.Data[27];
-            int x = SectionPos.x(t), y = SectionPos.y(t), z = SectionPos.z(t);
+        }
+        LongArrayList order = new LongArrayList(clusters.keySet());
+        order.sort((long a, long b) -> Integer.compare(clusterDist(a), clusterDist(b)));
+        List<BrickJob> jobs = new ArrayList<>();
+        for (int i = 0; i < order.size() && jobs.size() < 4; i++) {
+            long key = order.getLong(i);
+            int x0 = SectionPos.x(key) * c - 1, y0 = SectionPos.y(key) * c - 1, z0 = SectionPos.z(key) * c - 1;
+            SectionCache.Data[] near = new SectionCache.Data[n * n * n];
             boolean ready = true;
-            for (int dz = -1; dz <= 1 && ready; dz++) for (int dy = -1; dy <= 1 && ready; dy++) for (int dx = -1; dx <= 1; dx++) {
-                SectionCache.Data d = SectionCache.ready(x + dx, y + dy, z + dz);
+            for (int dz = 0; dz < n && ready; dz++) for (int dy = 0; dy < n && ready; dy++) for (int dx = 0; dx < n; dx++) {
+                SectionCache.Data d = SectionCache.ready(x0 + dx, y0 + dy, z0 + dz);
                 if (d == null) {
                     if (budget <= 0) {
                         ready = false;
                         break;
                     }
-                    d = SectionCache.build(level, x + dx, y + dy, z + dz);
+                    d = SectionCache.build(level, x0 + dx, y0 + dy, z0 + dz);
                     budget--;
                 }
-                near[(dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1))] = d;
+                near[dx + n * (dy + n * dz)] = d;
             }
             if (!ready) break;
-            PENDING.remove(t);
-            jobs.add(new BrickJob(t, VERSION.get(t), near));
+            LongArrayList ts = clusters.get(key);
+            long[] keys = ts.toLongArray();
+            int[] local = new int[keys.length], versions = new int[keys.length];
+            for (int k = 0; k < keys.length; k++) {
+                long t = keys[k];
+                PENDING.remove(t);
+                local[k] = (SectionPos.x(t) - x0 - 1) | (SectionPos.y(t) - y0 - 1) << 4 | (SectionPos.z(t) - z0 - 1) << 8;
+                versions[k] = VERSION.get(t);
+            }
+            jobs.add(new BrickJob(keys, versions, local, near));
         }
         if (jobs.isEmpty()) return budget;
         bricksRunning = true;
         WORKER.execute(() -> {
             try {
-                for (BrickJob j : jobs) RESULTS.add(new BrickResult(j.key(), j.version(), LightJobs.brick(j.near())));
+                for (BrickJob j : jobs) {
+                    byte[][] data = LightJobs.bricks(j.near(), j.local());
+                    for (int k = 0; k < j.keys().length; k++) RESULTS.add(new BrickResult(j.keys()[k], j.versions()[k], data[k]));
+                }
             } catch (Throwable th) {
                 FlRenderMod.LOGGER.error("FL Render: расчёт цветного света упал", th);
             } finally {
@@ -465,6 +494,12 @@ public final class ColorVolume {
             }
         });
         return budget;
+    }
+
+    private static int clusterDist(long key) {
+        int c = LightJobs.CLUSTER;
+        long centre = SectionPos.asLong(SectionPos.x(key) * c + 1, SectionPos.y(key) * c + 1, SectionPos.z(key) * c + 1);
+        return dist(centre);
     }
 
     private static int dist(long k) {
@@ -603,7 +638,7 @@ public final class ColorVolume {
         for (long k : SectionCache.keys()) {
             boolean add = Math.abs(SectionPos.x(k) - camSx) <= as && Math.abs(SectionPos.y(k) - camSy) <= as
                     && Math.abs(SectionPos.z(k) - camSz) <= as;
-            if (!add && (NEAR2.get(k) <= 0 || far(k, 2))) drop.add(k);
+            if (!add && (NEAR2.get(k) <= 0 || far(k, 4))) drop.add(k);
         }
         for (long k : drop) SectionCache.remove(k);
         VERSION.keySet().removeIf((long k) -> far(k, 3));

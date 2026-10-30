@@ -106,7 +106,7 @@ BY_ID = {
     'refurbished_furniture:light_gray_lamp': 'incandescent', 'refurbished_furniture:white_lamp': 'incandescent',
     'blocksyouneed_luna:anticrystal': 'sea', 'blocksyouneed_luna:elder_lantern': 'sea',
     'blocksyouneed_luna:glowescent_lights': 'incandescent',
-    'scpo:scp_006': None, 'glow_sticks:glow_stick_light': None, 'glow_sticks:glow_stick_light_water': None,
+    'scpo:scp_006': None, 'glow_sticks:glow_stick_black': None, 'glow_sticks:creative_glow_stick_black': None, 'glow_sticks:glow_stick_light': None, 'glow_sticks:glow_stick_light_water': None,
 }
 
 # Правила по словам (порядок важен). Слова в id через «_», в русском имени — подстрокой.
