@@ -66,8 +66,8 @@ final class LightJobs {
                 int lx = local & 15, lz = local >> 4 & 15, ly = local >> 8;
                 int start = (cx << 4) + lx + hs * ((cy << 4) + ly + vs * ((cz << 4) + lz));
                 int rgb = d.srcRgb()[k];
-                float top = Math.max(1, Math.max(rgb >> 16 & 255, Math.max(rgb >> 8 & 255, rgb & 255)));
-                float r = (rgb >> 16 & 255) / top, g = (rgb >> 8 & 255) / top, b = (rgb & 255) / top;
+                // Цвет как есть: оттенок шейдер берёт сам (rgb / max), а яркость цвета — сила подкраски (тёмный — слабее).
+                float r = (rgb >> 16 & 255) / 255f, g = (rgb >> 8 & 255) / 255f, b = (rgb & 255) / 255f;
                 flood.run(new int[]{start}, level, (cell, lv) -> {
                     float f = Math.min(1f, lv / (float) Math.max(1, w.blk()[cell] & 255));
                     int o = cell * 4;

@@ -68,8 +68,11 @@ void main() {
                 float top = max(t.r, max(t.g, t.b));
                 float amount = clamp(top * Tint * edge * (1.0 - t.a * Day * 0.85), 0.0, 1.0);
                 if (amount > 0.004) {
+                    // Pure colour of the light; the boost keeps the brightness: a saturated colour (red, blue)
+                    // is lifted up to Boost, a warm or whitish one barely changes the picture (it only shifts the hue).
                     vec3 hue = t.rgb / max(top, 0.001);
-                    col = mix(col, scene * hue * mix(Boost, 1.0, NightVision), amount);
+                    float k = clamp(1.0 / max(dot(hue, vec3(0.299, 0.587, 0.114)), 0.05), 1.0, mix(Boost, 1.0, NightVision));
+                    col = mix(col, scene * hue * k, amount);
                     changed = true;
                 }
             }

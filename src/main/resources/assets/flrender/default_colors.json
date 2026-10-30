@@ -1,0 +1,2033 @@
+{
+ "version": 2,
+ "blocks": {
+  "alexscaves:acid": {
+   "color": "#7CFF5A"
+  },
+  "alexscaves:amber_monolith": {
+   "color": "#FFA44C"
+  },
+  "alexscaves:ambersol": {
+   "color": "#FFEA4C"
+  },
+  "alexscaves:ambersol_light": {
+   "color": "#FFC060"
+  },
+  "alexscaves:bioluminescent_torch": {
+   "color": "#6CC8FF"
+  },
+  "alexscaves:bioluminescent_wall_torch": {
+   "color": "#6CC8FF"
+  },
+  "alexscaves:block_of_uranium": {
+   "color": "#4CFF4C"
+  },
+  "alexscaves:carmine_froglight": {
+   "color": "#FFB4A0"
+  },
+  "alexscaves:confection_oven": {
+   "color": "#F59A55"
+  },
+  "alexscaves:fissure_primal_magma": {
+   "color": "#FF7030"
+  },
+  "alexscaves:guanostone_redstone_ore": {
+   "color": "#E04A3C"
+  },
+  "alexscaves:hologram_projector": {
+   "color": "#A8C4E6"
+  },
+  "alexscaves:magnetic_light": {
+   "color": "#FF7080"
+  },
+  "alexscaves:primal_magma": {
+   "color": "#FF7030"
+  },
+  "alexscaves:radon_lamp_black": {
+   "color": "#E8D2B4"
+  },
+  "alexscaves:radon_lamp_blue": {
+   "color": "#3050FF"
+  },
+  "alexscaves:radon_lamp_brown": {
+   "color": "#C07838"
+  },
+  "alexscaves:radon_lamp_cyan": {
+   "color": "#20E0E0"
+  },
+  "alexscaves:radon_lamp_gray": {
+   "color": "#E8D2B4"
+  },
+  "alexscaves:radon_lamp_green": {
+   "color": "#30D030"
+  },
+  "alexscaves:radon_lamp_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "alexscaves:radon_lamp_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "alexscaves:radon_lamp_lime": {
+   "color": "#8CFF30"
+  },
+  "alexscaves:radon_lamp_magenta": {
+   "color": "#E040E0"
+  },
+  "alexscaves:radon_lamp_orange": {
+   "color": "#FF8A1E"
+  },
+  "alexscaves:radon_lamp_pink": {
+   "color": "#FF7AB4"
+  },
+  "alexscaves:radon_lamp_purple": {
+   "color": "#A040FF"
+  },
+  "alexscaves:radon_lamp_red": {
+   "color": "#FF2A1A"
+  },
+  "alexscaves:radon_lamp_white": {
+   "color": "#E8D2B4"
+  },
+  "alexscaves:radon_lamp_yellow": {
+   "color": "#FFE030"
+  },
+  "alexscaves:siren_light": {
+   "color": "#F0302A"
+  },
+  "alexscaves:sundrop": {
+   "color": "#FFE8A0"
+  },
+  "alexscaves:tesla_bulb": {
+   "color": "#D8B8FF"
+  },
+  "alexscaves:uranium_rod": {
+   "color": "#4CFF4C"
+  },
+  "alexscaves:volcanic_core": {
+   "color": "#FFAB4C"
+  },
+  "amendments:carpet_slab": {
+   "color": "#F59A55"
+  },
+  "amendments:skull_candle": {
+   "color": "#E8B478"
+  },
+  "amendments:skull_candle_soul": {
+   "color": "#8CCAE3"
+  },
+  "amendments:skull_candle_soul_wall": {
+   "color": "#8CCAE3"
+  },
+  "amendments:skull_candle_wall": {
+   "color": "#E8B478"
+  },
+  "amendments:wall_lantern": {
+   "color": "#D9B47A"
+  },
+  "anomaly_rephased:unlit_torch": {
+   "color": "#F59A55"
+  },
+  "anomaly_rephased:unlit_torch_wall": {
+   "color": "#F59A55"
+  },
+  "betterarcheology:radiance_totem": {
+   "color": "#EED08E"
+  },
+  "biomesoplenty:glowflower": {
+   "color": "#6CC8FF"
+  },
+  "biomesoplenty:glowing_moss_block": {
+   "color": "#67C2FF"
+  },
+  "biomesoplenty:glowing_moss_carpet": {
+   "color": "#67C2FF"
+  },
+  "biomesoplenty:glowshroom": {
+   "color": "#B1EFFF"
+  },
+  "biomesoplenty:glowshroom_block": {
+   "color": "#8BC7FF"
+  },
+  "biomesoplenty:lumaloop": {
+   "color": "#FFE070"
+  },
+  "biomesoplenty:lumaloop_plant": {
+   "color": "#FFE070"
+  },
+  "biomesoplenty:potted_glowflower": {
+   "color": "#6CC8FF"
+  },
+  "biomesoplenty:potted_glowshroom": {
+   "color": "#86C9FF"
+  },
+  "biomesoplenty:rose_quartz_block": {
+   "color": "#FF8898"
+  },
+  "biomesoplenty:small_rose_quartz_bud": {
+   "color": "#FF81B8"
+  },
+  "blocksyouneed_luna:antiblock_blinking_light_blue_fast": {
+   "color": "#5AC8FF"
+  },
+  "blocksyouneed_luna:antiblock_blinking_light_blue_slow": {
+   "color": "#5AC8FF"
+  },
+  "blocksyouneed_luna:antiblock_blinking_light_gray_fast": {
+   "color": "#E8D2B4"
+  },
+  "blocksyouneed_luna:antiblock_blinking_light_gray_slow": {
+   "color": "#E8D2B4"
+  },
+  "blocksyouneed_luna:antiblock_blue": {
+   "color": "#4C4CFF"
+  },
+  "blocksyouneed_luna:antiblock_brown": {
+   "color": "#FF884C"
+  },
+  "blocksyouneed_luna:antiblock_cyan": {
+   "color": "#4CF0FF"
+  },
+  "blocksyouneed_luna:antiblock_green": {
+   "color": "#C0FF4C"
+  },
+  "blocksyouneed_luna:antiblock_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "blocksyouneed_luna:antiblock_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "blocksyouneed_luna:antiblock_lime": {
+   "color": "#A0FF4C"
+  },
+  "blocksyouneed_luna:antiblock_magenta": {
+   "color": "#FF4CEE"
+  },
+  "blocksyouneed_luna:antiblock_orange": {
+   "color": "#FF8C4C"
+  },
+  "blocksyouneed_luna:antiblock_pink": {
+   "color": "#FFA7C2"
+  },
+  "blocksyouneed_luna:antiblock_purple": {
+   "color": "#B64CFF"
+  },
+  "blocksyouneed_luna:antiblock_rainbow": {
+   "color": "#FF4C4C"
+  },
+  "blocksyouneed_luna:antiblock_red": {
+   "color": "#FF4C4C"
+  },
+  "blocksyouneed_luna:antiblock_trans": {
+   "color": "#4CCBFF"
+  },
+  "blocksyouneed_luna:antiblock_yellow": {
+   "color": "#FFCC4C"
+  },
+  "blocksyouneed_luna:anticrystal": {
+   "color": "#C4E2EE"
+  },
+  "blocksyouneed_luna:barrel_glowstone": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:bone_lantern_on": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:bone_o_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:brass_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:brass_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:bronze_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:bronze_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:copper_bone_o_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:copper_jack_o_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:copper_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:copper_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:copper_lit_melon_colon_3": {
+   "color": "#F3FF55"
+  },
+  "blocksyouneed_luna:copper_lit_pumpkin_colon_3": {
+   "color": "#FFB450"
+  },
+  "blocksyouneed_luna:copper_melon_o_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:elder_lantern": {
+   "color": "#C4E2EE"
+  },
+  "blocksyouneed_luna:exposed_copper_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:exposed_copper_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:facility_block_lamp_indent_on": {
+   "color": "#E8D2B4"
+  },
+  "blocksyouneed_luna:facility_block_stack_lamp_on": {
+   "color": "#E8D2B4"
+  },
+  "blocksyouneed_luna:glowescent_lights": {
+   "color": "#E8D2B4"
+  },
+  "blocksyouneed_luna:illumina_block": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:illumina_cut": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:illumina_cut_slab": {
+   "color": "#F59A55"
+  },
+  "blocksyouneed_luna:illumina_cut_stairs": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:illumina_cut_wall": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:illumina_path": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:illumina_slab": {
+   "color": "#F59A55"
+  },
+  "blocksyouneed_luna:illumina_stairs": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:illumina_wall": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:liquid_illumina": {
+   "color": "#EED08E"
+  },
+  "blocksyouneed_luna:lit_bone_colon_3": {
+   "color": "#FFFCD2"
+  },
+  "blocksyouneed_luna:lit_melon_colon_3": {
+   "color": "#FFF666"
+  },
+  "blocksyouneed_luna:lit_pumpkin_colon_3": {
+   "color": "#FFB450"
+  },
+  "blocksyouneed_luna:melon_o_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:oxidised_copper_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:oxidised_copper_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:paper_lantern": {
+   "color": "#FF8A5A"
+  },
+  "blocksyouneed_luna:soul_bone_o_lantern": {
+   "color": "#8CCAE3"
+  },
+  "blocksyouneed_luna:soul_jack_o_lantern": {
+   "color": "#8CCAE3"
+  },
+  "blocksyouneed_luna:soul_lit_bone_colon_3": {
+   "color": "#8CCAE3"
+  },
+  "blocksyouneed_luna:soul_lit_melon_colon_3": {
+   "color": "#8CCAE3"
+  },
+  "blocksyouneed_luna:soul_lit_pumpkin_colon_3": {
+   "color": "#8CCAE3"
+  },
+  "blocksyouneed_luna:soul_melon_o_lantern": {
+   "color": "#8CCAE3"
+  },
+  "blocksyouneed_luna:steel_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:steel_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:weathered_copper_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:weathered_copper_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:wrought_kerosene_lantern": {
+   "color": "#D9B47A"
+  },
+  "blocksyouneed_luna:wrought_kerosene_lantern_h": {
+   "color": "#D9B47A"
+  },
+  "brewery:brew_oven": {
+   "color": "#F59A55"
+  },
+  "candlelight:bamboo_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:basalt_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:cobblestone_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:deepslate_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:end_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:granite_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:lamp": {
+   "color": "#E8D2B4"
+  },
+  "candlelight:mud_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:quartz_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:red_nether_bricks_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:sandstone_stove": {
+   "color": "#F59A55"
+  },
+  "candlelight:stone_bricks_stove": {
+   "color": "#F59A55"
+  },
+  "chemlib:argon_lamp_block": {
+   "color": "#B47CFF"
+  },
+  "chemlib:helium_lamp_block": {
+   "color": "#FFB49A"
+  },
+  "chemlib:krypton_lamp_block": {
+   "color": "#E2EAFF"
+  },
+  "chemlib:neon_lamp_block": {
+   "color": "#FF5A28"
+  },
+  "chemlib:radon_lamp_block": {
+   "color": "#FF4A64"
+  },
+  "chemlib:xenon_lamp_block": {
+   "color": "#C8D6FF"
+  },
+  "clanginghowl:broken_steel_lamp": {
+   "color": "#E8D2B4"
+  },
+  "clanginghowl:redstone_steel_lamp": {
+   "color": "#E04A3C"
+  },
+  "clanginghowl:steel_lamp": {
+   "color": "#E8D2B4"
+  },
+  "csfoundation:acid_mushroom": {
+   "color": "#CBFFB9"
+  },
+  "csfoundation:alloying_furnace": {
+   "color": "#F59A55"
+  },
+  "csfoundation:brass_lantern": {
+   "color": "#D9B47A"
+  },
+  "csfoundation:brass_soul_lantern": {
+   "color": "#8CCAE3"
+  },
+  "csfoundation:steel_florescent_lamp": {
+   "color": "#DCE6F2"
+  },
+  "csfoundation:steel_lantern": {
+   "color": "#D9B47A"
+  },
+  "csfoundation:steel_modern_lamp": {
+   "color": "#E4EAF2"
+  },
+  "csfoundation:steel_rustic_lamp": {
+   "color": "#E8D2B4"
+  },
+  "csfoundation:steel_soul_lantern": {
+   "color": "#8CCAE3"
+  },
+  "cuffed:reinforced_lamp": {
+   "color": "#E4EAF2"
+  },
+  "customnpcs:npcredstoneblock": {
+   "color": "#E04A3C"
+  },
+  "cybernetic_system:lamp_made_of_black_metal": {
+   "color": "#E8D2B4"
+  },
+  "cybernetic_system:reinforced_titanium_lamp": {
+   "color": "#E4EAF2"
+  },
+  "cybernetic_system:titanium_lamp": {
+   "color": "#E4EAF2"
+  },
+  "doomsday_decoration:crt_2": {
+   "color": "#A8C4E6"
+  },
+  "doomsday_decoration:exit": {
+   "color": "#5ADC72"
+  },
+  "doomsday_decoration:exit_2": {
+   "color": "#5ADC72"
+  },
+  "doomsday_decoration:exit_3": {
+   "color": "#5ADC72"
+  },
+  "doomsday_decoration:fluorescentlamp_1": {
+   "color": "#DCE6F2"
+  },
+  "doomsday_decoration:lamp": {
+   "color": "#E8D2B4"
+  },
+  "doomsday_decoration:lamp_steps": {
+   "color": "#E8D2B4"
+  },
+  "doomsday_decoration:lampstaircase": {
+   "color": "#E8D2B4"
+  },
+  "doomsday_decoration:oldtv_2": {
+   "color": "#A8C4E6"
+  },
+  "doomsday_decoration:parkstreetlights": {
+   "color": "#F0B060"
+  },
+  "doomsday_decoration:roundlamps": {
+   "color": "#E8D2B4"
+  },
+  "doomsday_decoration:streetlamp_1": {
+   "color": "#F0B060"
+  },
+  "doomsday_decoration:streetlamp_2": {
+   "color": "#F0B060"
+  },
+  "doomsday_decoration:tablelamp": {
+   "color": "#E8D2B4"
+  },
+  "doomsday_decoration:tablelamp_2": {
+   "color": "#E8D2B4"
+  },
+  "farm_and_charm:stove": {
+   "color": "#F59A55"
+  },
+  "farmersdelight:stove": {
+   "color": "#F59A55"
+  },
+  "fire_extinguisher:exit_sign": {
+   "color": "#5ADC72"
+  },
+  "fire_extinguisher:exit_sign_left": {
+   "color": "#5ADC72"
+  },
+  "fire_extinguisher:exit_sign_left_down": {
+   "color": "#5ADC72"
+  },
+  "fire_extinguisher:exit_sign_left_up": {
+   "color": "#5ADC72"
+  },
+  "fire_extinguisher:exit_sign_right": {
+   "color": "#5ADC72"
+  },
+  "fire_extinguisher:exit_sign_right_down": {
+   "color": "#5ADC72"
+  },
+  "fire_extinguisher:exit_sign_right_up": {
+   "color": "#5ADC72"
+  },
+  "fire_extinguisher:fire_alarm_bell": {
+   "color": "#F0302A"
+  },
+  "fire_extinguisher:fire_alarm_siren": {
+   "color": "#F0302A"
+  },
+  "glow_sticks:creative_glow_stick_amber": {
+   "color": "#D7AF00"
+  },
+  "glow_sticks:creative_glow_stick_aqua": {
+   "color": "#5EF0CC"
+  },
+  "glow_sticks:creative_glow_stick_beige": {
+   "color": "#E1D5A3"
+  },
+  "glow_sticks:creative_glow_stick_black": {
+   "color": "#000000"
+  },
+  "glow_sticks:creative_glow_stick_blue": {
+   "color": "#1515EA"
+  },
+  "glow_sticks:creative_glow_stick_brown": {
+   "color": "#804100"
+  },
+  "glow_sticks:creative_glow_stick_coral": {
+   "color": "#DF7758"
+  },
+  "glow_sticks:creative_glow_stick_cyan": {
+   "color": "#00BFBF"
+  },
+  "glow_sticks:creative_glow_stick_forest": {
+   "color": "#32A326"
+  },
+  "glow_sticks:creative_glow_stick_ginger": {
+   "color": "#CF6121"
+  },
+  "glow_sticks:creative_glow_stick_gray": {
+   "color": "#323232"
+  },
+  "glow_sticks:creative_glow_stick_green": {
+   "color": "#15FF00"
+  },
+  "glow_sticks:creative_glow_stick_indigo": {
+   "color": "#331E57"
+  },
+  "glow_sticks:creative_glow_stick_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "glow_sticks:creative_glow_stick_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "glow_sticks:creative_glow_stick_lime": {
+   "color": "#80EA15"
+  },
+  "glow_sticks:creative_glow_stick_magenta": {
+   "color": "#FF0080"
+  },
+  "glow_sticks:creative_glow_stick_maroon": {
+   "color": "#7B2713"
+  },
+  "glow_sticks:creative_glow_stick_mint": {
+   "color": "#38CE7D"
+  },
+  "glow_sticks:creative_glow_stick_navy": {
+   "color": "#153D64"
+  },
+  "glow_sticks:creative_glow_stick_olive": {
+   "color": "#8C8F2A"
+  },
+  "glow_sticks:creative_glow_stick_orange": {
+   "color": "#FF9900"
+  },
+  "glow_sticks:creative_glow_stick_pink": {
+   "color": "#EA15EA"
+  },
+  "glow_sticks:creative_glow_stick_purple": {
+   "color": "#8015EA"
+  },
+  "glow_sticks:creative_glow_stick_red": {
+   "color": "#FF0004"
+  },
+  "glow_sticks:creative_glow_stick_rose": {
+   "color": "#FF5E64"
+  },
+  "glow_sticks:creative_glow_stick_slate": {
+   "color": "#4C5E86"
+  },
+  "glow_sticks:creative_glow_stick_tan": {
+   "color": "#F49C5D"
+  },
+  "glow_sticks:creative_glow_stick_teal": {
+   "color": "#2F7B67"
+  },
+  "glow_sticks:creative_glow_stick_verdant": {
+   "color": "#255714"
+  },
+  "glow_sticks:creative_glow_stick_white": {
+   "color": "#FFFFFF"
+  },
+  "glow_sticks:creative_glow_stick_yellow": {
+   "color": "#FFDF00"
+  },
+  "glow_sticks:glow_stick_amber": {
+   "color": "#D7AF00"
+  },
+  "glow_sticks:glow_stick_aqua": {
+   "color": "#5EF0CC"
+  },
+  "glow_sticks:glow_stick_beige": {
+   "color": "#E1D5A3"
+  },
+  "glow_sticks:glow_stick_black": {
+   "color": "#000000"
+  },
+  "glow_sticks:glow_stick_blue": {
+   "color": "#1515EA"
+  },
+  "glow_sticks:glow_stick_brown": {
+   "color": "#804100"
+  },
+  "glow_sticks:glow_stick_coral": {
+   "color": "#DF7758"
+  },
+  "glow_sticks:glow_stick_cyan": {
+   "color": "#00BFBF"
+  },
+  "glow_sticks:glow_stick_forest": {
+   "color": "#32A326"
+  },
+  "glow_sticks:glow_stick_ginger": {
+   "color": "#CF6121"
+  },
+  "glow_sticks:glow_stick_gray": {
+   "color": "#323232"
+  },
+  "glow_sticks:glow_stick_green": {
+   "color": "#15FF00"
+  },
+  "glow_sticks:glow_stick_indigo": {
+   "color": "#331E57"
+  },
+  "glow_sticks:glow_stick_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "glow_sticks:glow_stick_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "glow_sticks:glow_stick_lime": {
+   "color": "#80EA15"
+  },
+  "glow_sticks:glow_stick_magenta": {
+   "color": "#FF0080"
+  },
+  "glow_sticks:glow_stick_maroon": {
+   "color": "#7B2713"
+  },
+  "glow_sticks:glow_stick_mint": {
+   "color": "#38CE7D"
+  },
+  "glow_sticks:glow_stick_navy": {
+   "color": "#153D64"
+  },
+  "glow_sticks:glow_stick_olive": {
+   "color": "#8C8F2A"
+  },
+  "glow_sticks:glow_stick_orange": {
+   "color": "#FF9900"
+  },
+  "glow_sticks:glow_stick_pink": {
+   "color": "#EA15EA"
+  },
+  "glow_sticks:glow_stick_purple": {
+   "color": "#8015EA"
+  },
+  "glow_sticks:glow_stick_red": {
+   "color": "#FF0004"
+  },
+  "glow_sticks:glow_stick_rose": {
+   "color": "#FF5E64"
+  },
+  "glow_sticks:glow_stick_slate": {
+   "color": "#4C5E86"
+  },
+  "glow_sticks:glow_stick_tan": {
+   "color": "#F49C5D"
+  },
+  "glow_sticks:glow_stick_teal": {
+   "color": "#2F7B67"
+  },
+  "glow_sticks:glow_stick_verdant": {
+   "color": "#255714"
+  },
+  "glow_sticks:glow_stick_white": {
+   "color": "#FFFFFF"
+  },
+  "glow_sticks:glow_stick_yellow": {
+   "color": "#FFDF00"
+  },
+  "herbalbrews:stove": {
+   "color": "#F59A55"
+  },
+  "horror_element_mod:broken_tv": {
+   "color": "#A8C4E6"
+  },
+  "horror_element_mod:light_on": {
+   "color": "#E8D2B4"
+  },
+  "horror_element_mod:redlantern": {
+   "color": "#AB3F48"
+  },
+  "horror_element_mod:redlanternchain": {
+   "color": "#E16670"
+  },
+  "immersive_weathering:charred_slab": {
+   "color": "#F59A55"
+  },
+  "industrialhellscape:retro_computer": {
+   "color": "#A8C4E6"
+  },
+  "industrialhellscape:retro_computer_2": {
+   "color": "#A8C4E6"
+  },
+  "industrialhellscape:vitals_monitor": {
+   "color": "#A8C4E6"
+  },
+  "legendarysurvivaloverhaul:heater": {
+   "color": "#FFA962"
+  },
+  "mekanism:advanced_pressurized_tube": {
+   "color": "#DCE6F2"
+  },
+  "mekanism:basic_pressurized_tube": {
+   "color": "#DCE6F2"
+  },
+  "mekanism:block_refined_glowstone": {
+   "color": "#EED08E"
+  },
+  "mekanism:elite_pressurized_tube": {
+   "color": "#DCE6F2"
+  },
+  "mekanism:industrial_alarm": {
+   "color": "#F0302A"
+  },
+  "mekanism:qio_redstone_adapter": {
+   "color": "#E04A3C"
+  },
+  "mekanism:ultimate_pressurized_tube": {
+   "color": "#DCE6F2"
+  },
+  "mekanismelements:air_compressor": {
+   "color": "#8CCAE3"
+  },
+  "minecraft:amethyst_cluster": {
+   "color": "#C07CFF"
+  },
+  "minecraft:beacon": {
+   "color": "#C4E2EE"
+  },
+  "minecraft:black_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:blast_furnace": {
+   "color": "#F59A55"
+  },
+  "minecraft:blue_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:brown_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:campfire": {
+   "color": "#F59A55"
+  },
+  "minecraft:candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:cave_vines": {
+   "color": "#E3FF73"
+  },
+  "minecraft:cave_vines_plant": {
+   "color": "#F1FF74"
+  },
+  "minecraft:crying_obsidian": {
+   "color": "#C07CFF"
+  },
+  "minecraft:cyan_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:deepslate_redstone_ore": {
+   "color": "#E04A3C"
+  },
+  "minecraft:end_gateway": {
+   "color": "#40E0B0"
+  },
+  "minecraft:end_portal": {
+   "color": "#40E0B0"
+  },
+  "minecraft:end_rod": {
+   "color": "#E4EAF2"
+  },
+  "minecraft:fire": {
+   "color": "#F59A55"
+  },
+  "minecraft:furnace": {
+   "color": "#F59A55"
+  },
+  "minecraft:glow_lichen": {
+   "color": "#8CFF8C"
+  },
+  "minecraft:glowstone": {
+   "color": "#EED08E"
+  },
+  "minecraft:gray_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:green_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:jack_o_lantern": {
+   "color": "#E8B478"
+  },
+  "minecraft:lantern": {
+   "color": "#D9B47A"
+  },
+  "minecraft:large_amethyst_bud": {
+   "color": "#C07CFF"
+  },
+  "minecraft:lava": {
+   "color": "#FF7030"
+  },
+  "minecraft:lava_cauldron": {
+   "color": "#FF7030"
+  },
+  "minecraft:light_blue_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:light_gray_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:lime_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:magenta_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:nether_portal": {
+   "color": "#BB67FF"
+  },
+  "minecraft:ochre_froglight": {
+   "color": "#FFE29A"
+  },
+  "minecraft:orange_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:pearlescent_froglight": {
+   "color": "#FFD0F0"
+  },
+  "minecraft:pink_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:purple_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:red_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:redstone_ore": {
+   "color": "#E04A3C"
+  },
+  "minecraft:redstone_torch": {
+   "color": "#E04A3C"
+  },
+  "minecraft:redstone_wall_torch": {
+   "color": "#E04A3C"
+  },
+  "minecraft:respawn_anchor": {
+   "color": "#C07CFF"
+  },
+  "minecraft:sculk_catalyst": {
+   "color": "#6CC8FF"
+  },
+  "minecraft:sea_lantern": {
+   "color": "#C4E2EE"
+  },
+  "minecraft:sea_pickle": {
+   "color": "#F3FF7C"
+  },
+  "minecraft:shroomlight": {
+   "color": "#D9B47A"
+  },
+  "minecraft:smoker": {
+   "color": "#F59A55"
+  },
+  "minecraft:soul_campfire": {
+   "color": "#8CCAE3"
+  },
+  "minecraft:soul_fire": {
+   "color": "#8CCAE3"
+  },
+  "minecraft:soul_lantern": {
+   "color": "#8CCAE3"
+  },
+  "minecraft:soul_torch": {
+   "color": "#8CCAE3"
+  },
+  "minecraft:soul_wall_torch": {
+   "color": "#8CCAE3"
+  },
+  "minecraft:torch": {
+   "color": "#F59A55"
+  },
+  "minecraft:verdant_froglight": {
+   "color": "#C8FFB0"
+  },
+  "minecraft:wall_torch": {
+   "color": "#F59A55"
+  },
+  "minecraft:white_candle": {
+   "color": "#E8B478"
+  },
+  "minecraft:yellow_candle": {
+   "color": "#E8B478"
+  },
+  "moa_decor_electronics:laptop_blanca_codigo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_blanca_minecraft": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_blanca_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_blanca_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_blanca_youtube": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_gris_codigo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_gris_minecraft": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_gris_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_gris_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_gris_youtube": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_negra_codigo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_negra_minecraft": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_negra_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_negra_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:laptop_negra_youtube": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:pc_antigua_encendida": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:teclado_monitor_codigo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:teclado_monitor_minecraft": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:teclado_monitor_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:teclado_monitor_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:teclado_monitor_youtube": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tv_minecraft": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tv_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tv_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tv_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_abedul_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_abedul_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_abedul_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_abeto_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_abeto_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_abeto_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_acacia_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_acacia_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_acacia_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_bambu_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_bambu_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_bambu_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_cerezo_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_cerezo_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_cerezo_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_jungla_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_jungla_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_jungla_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_mangle_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_mangle_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_mangle_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_roble_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_roble_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_roble_osc_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_roble_osc_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_roble_osc_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tva_roble_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tvat_carmesi_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tvat_carmesi_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tvat_carmesi_pollo": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tvat_distorsionado_netflix": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tvat_distorsionado_noticiero": {
+   "color": "#A8C4E6"
+  },
+  "moa_decor_electronics:tvat_distorsionado_pollo": {
+   "color": "#A8C4E6"
+  },
+  "multibeds:cot": {
+   "color": "#8CCAE3"
+  },
+  "multibeds:slab": {
+   "color": "#F59A55"
+  },
+  "pneumaticcraft:kerosene_lamp": {
+   "color": "#D9B47A"
+  },
+  "pneumaticcraft:kerosene_lamp_light": {
+   "color": "#D9B47A"
+  },
+  "pneumaticcraft:uv_light_box": {
+   "color": "#9A6CFF"
+  },
+  "pneumaticcraft:wall_lamp_black": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_blue": {
+   "color": "#3050FF"
+  },
+  "pneumaticcraft:wall_lamp_brown": {
+   "color": "#C07838"
+  },
+  "pneumaticcraft:wall_lamp_cyan": {
+   "color": "#20E0E0"
+  },
+  "pneumaticcraft:wall_lamp_gray": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_green": {
+   "color": "#30D030"
+  },
+  "pneumaticcraft:wall_lamp_inverted_black": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_inverted_blue": {
+   "color": "#3050FF"
+  },
+  "pneumaticcraft:wall_lamp_inverted_brown": {
+   "color": "#C07838"
+  },
+  "pneumaticcraft:wall_lamp_inverted_cyan": {
+   "color": "#20E0E0"
+  },
+  "pneumaticcraft:wall_lamp_inverted_gray": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_inverted_green": {
+   "color": "#30D030"
+  },
+  "pneumaticcraft:wall_lamp_inverted_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "pneumaticcraft:wall_lamp_inverted_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_inverted_lime": {
+   "color": "#8CFF30"
+  },
+  "pneumaticcraft:wall_lamp_inverted_magenta": {
+   "color": "#E040E0"
+  },
+  "pneumaticcraft:wall_lamp_inverted_orange": {
+   "color": "#FF8A1E"
+  },
+  "pneumaticcraft:wall_lamp_inverted_pink": {
+   "color": "#FF7AB4"
+  },
+  "pneumaticcraft:wall_lamp_inverted_purple": {
+   "color": "#A040FF"
+  },
+  "pneumaticcraft:wall_lamp_inverted_red": {
+   "color": "#FF2A1A"
+  },
+  "pneumaticcraft:wall_lamp_inverted_white": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_inverted_yellow": {
+   "color": "#FFE030"
+  },
+  "pneumaticcraft:wall_lamp_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "pneumaticcraft:wall_lamp_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_lime": {
+   "color": "#8CFF30"
+  },
+  "pneumaticcraft:wall_lamp_magenta": {
+   "color": "#E040E0"
+  },
+  "pneumaticcraft:wall_lamp_orange": {
+   "color": "#FF8A1E"
+  },
+  "pneumaticcraft:wall_lamp_pink": {
+   "color": "#FF7AB4"
+  },
+  "pneumaticcraft:wall_lamp_purple": {
+   "color": "#A040FF"
+  },
+  "pneumaticcraft:wall_lamp_red": {
+   "color": "#FF2A1A"
+  },
+  "pneumaticcraft:wall_lamp_white": {
+   "color": "#E8D2B4"
+  },
+  "pneumaticcraft:wall_lamp_yellow": {
+   "color": "#FFE030"
+  },
+  "quark:black_crystal_lamp": {
+   "color": "#E8D2B4"
+  },
+  "quark:blackstone_furnace": {
+   "color": "#F59A55"
+  },
+  "quark:blaze_lantern": {
+   "color": "#F59A55"
+  },
+  "quark:blue_corundum": {
+   "color": "#80D5FF"
+  },
+  "quark:blue_corundum_cluster": {
+   "color": "#B3FEFF"
+  },
+  "quark:blue_corundum_pane": {
+   "color": "#75DEFF"
+  },
+  "quark:blue_crystal_lamp": {
+   "color": "#3050FF"
+  },
+  "quark:deepslate_furnace": {
+   "color": "#F59A55"
+  },
+  "quark:duskbound_lantern": {
+   "color": "#C4BCFF"
+  },
+  "quark:glow_lichen_growth": {
+   "color": "#8CFF8C"
+  },
+  "quark:glow_shroom": {
+   "color": "#C1FFFF"
+  },
+  "quark:glowberry_sack": {
+   "color": "#D9B47A"
+  },
+  "quark:green_corundum": {
+   "color": "#8FFF61"
+  },
+  "quark:green_corundum_cluster": {
+   "color": "#B7FF9B"
+  },
+  "quark:green_corundum_pane": {
+   "color": "#9EFF73"
+  },
+  "quark:green_crystal_lamp": {
+   "color": "#30D030"
+  },
+  "quark:indigo_corundum": {
+   "color": "#8EA7FF"
+  },
+  "quark:indigo_corundum_cluster": {
+   "color": "#B4E1FF"
+  },
+  "quark:indigo_corundum_pane": {
+   "color": "#8FAEFF"
+  },
+  "quark:indigo_crystal_lamp": {
+   "color": "#3050FF"
+  },
+  "quark:myalite_crystal": {
+   "color": "#C07CFF"
+  },
+  "quark:orange_corundum": {
+   "color": "#FFAC52"
+  },
+  "quark:orange_corundum_cluster": {
+   "color": "#FFFF91"
+  },
+  "quark:orange_corundum_pane": {
+   "color": "#FFB14C"
+  },
+  "quark:orange_crystal_lamp": {
+   "color": "#FF8A1E"
+  },
+  "quark:paper_lantern": {
+   "color": "#E8B478"
+  },
+  "quark:paper_lantern_sakura": {
+   "color": "#E8B478"
+  },
+  "quark:potted_cave_vines": {
+   "color": "#EBFF73"
+  },
+  "quark:potted_glow_lichen_growth": {
+   "color": "#8CFF8C"
+  },
+  "quark:potted_glow_shroom": {
+   "color": "#98FFE4"
+  },
+  "quark:red_corundum": {
+   "color": "#FF838D"
+  },
+  "quark:red_corundum_cluster": {
+   "color": "#FFA3BD"
+  },
+  "quark:red_corundum_pane": {
+   "color": "#FF7A89"
+  },
+  "quark:red_crystal_lamp": {
+   "color": "#FF2A1A"
+  },
+  "quark:stone_brick_lamp": {
+   "color": "#E8D2B4"
+  },
+  "quark:stone_lamp": {
+   "color": "#E8D2B4"
+  },
+  "quark:violet_corundum": {
+   "color": "#FF77C1"
+  },
+  "quark:violet_corundum_cluster": {
+   "color": "#FFA3FC"
+  },
+  "quark:violet_corundum_pane": {
+   "color": "#FF7BC1"
+  },
+  "quark:violet_crystal_lamp": {
+   "color": "#A040FF"
+  },
+  "quark:waxed_blue_corundum": {
+   "color": "#80D5FF"
+  },
+  "quark:waxed_green_corundum": {
+   "color": "#8FFF61"
+  },
+  "quark:waxed_indigo_corundum": {
+   "color": "#8EA7FF"
+  },
+  "quark:waxed_orange_corundum": {
+   "color": "#FFAC52"
+  },
+  "quark:waxed_red_corundum": {
+   "color": "#FF838D"
+  },
+  "quark:waxed_violet_corundum": {
+   "color": "#FF77C1"
+  },
+  "quark:waxed_yellow_corundum": {
+   "color": "#FFE64C"
+  },
+  "quark:white_crystal_lamp": {
+   "color": "#E8D2B4"
+  },
+  "quark:yellow_corundum": {
+   "color": "#FFE64C"
+  },
+  "quark:yellow_corundum_cluster": {
+   "color": "#FFFEBA"
+  },
+  "quark:yellow_corundum_pane": {
+   "color": "#FFE94C"
+  },
+  "quark:yellow_crystal_lamp": {
+   "color": "#FFE030"
+  },
+  "refurbished_furniture:acacia_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:acacia_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:birch_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:birch_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:black_lamp": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:blue_lamp": {
+   "color": "#3050FF"
+  },
+  "refurbished_furniture:brown_lamp": {
+   "color": "#C07838"
+  },
+  "refurbished_furniture:cherry_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:cherry_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:crimson_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:crimson_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:cyan_lamp": {
+   "color": "#20E0E0"
+  },
+  "refurbished_furniture:dark_ceiling_light": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:dark_oak_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:dark_oak_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:gray_lamp": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:green_lamp": {
+   "color": "#30D030"
+  },
+  "refurbished_furniture:jungle_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:jungle_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:light_blue_lamp": {
+   "color": "#5AC8FF"
+  },
+  "refurbished_furniture:light_ceiling_light": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:light_gray_lamp": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:light_range_hood": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:lime_lamp": {
+   "color": "#8CFF30"
+  },
+  "refurbished_furniture:magenta_lamp": {
+   "color": "#E040E0"
+  },
+  "refurbished_furniture:mangrove_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:mangrove_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:oak_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:oak_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:orange_lamp": {
+   "color": "#FF8A1E"
+  },
+  "refurbished_furniture:pink_lamp": {
+   "color": "#FF7AB4"
+  },
+  "refurbished_furniture:purple_lamp": {
+   "color": "#A040FF"
+  },
+  "refurbished_furniture:red_lamp": {
+   "color": "#FF2A1A"
+  },
+  "refurbished_furniture:spruce_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:spruce_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:television": {
+   "color": "#A8C4E6"
+  },
+  "refurbished_furniture:warped_dark_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:warped_light_ceiling_fan": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:white_lamp": {
+   "color": "#E8D2B4"
+  },
+  "refurbished_furniture:yellow_lamp": {
+   "color": "#FFE030"
+  },
+  "rpmedicine:surgical_lamp": {
+   "color": "#E4EAF2"
+  },
+  "s5glow:colored_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "s5glow:colored_light_brown": {
+   "color": "#C07838"
+  },
+  "s5glow:colored_light_cyan": {
+   "color": "#20E0E0"
+  },
+  "s5glow:colored_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "s5glow:colored_light_green": {
+   "color": "#30D030"
+  },
+  "s5glow:colored_light_light_blue": {
+   "color": "#5AC8FF"
+  },
+  "s5glow:colored_light_light_gray": {
+   "color": "#E8D2B4"
+  },
+  "s5glow:colored_light_lime": {
+   "color": "#8CFF30"
+  },
+  "s5glow:colored_light_magenta": {
+   "color": "#E040E0"
+  },
+  "s5glow:colored_light_orange": {
+   "color": "#FF8A1E"
+  },
+  "s5glow:colored_light_pink": {
+   "color": "#FF7AB4"
+  },
+  "s5glow:colored_light_purple": {
+   "color": "#A040FF"
+  },
+  "s5glow:colored_light_red": {
+   "color": "#FF2A1A"
+  },
+  "s5glow:colored_light_white": {
+   "color": "#E8D2B4"
+  },
+  "s5glow:colored_light_yellow": {
+   "color": "#FFE030"
+  },
+  "sa_decor:black_desk_lamp": {
+   "color": "#E8D2B4"
+  },
+  "sa_decor:blue_desk_lamp": {
+   "color": "#3050FF"
+  },
+  "sa_decor:double_flourecent_lamp": {
+   "color": "#DCE6F2"
+  },
+  "sa_decor:double_flourecent_lamp_flickering": {
+   "color": "#DCE6F2"
+  },
+  "sa_decor:dual_tripod_work_light": {
+   "color": "none"
+  },
+  "sa_decor:exit_sign": {
+   "color": "#5ADC72"
+  },
+  "sa_decor:lamp_block": {
+   "color": "#E8D2B4"
+  },
+  "sa_decor:lamp_block_flickering": {
+   "color": "#E8D2B4"
+  },
+  "sa_decor:portable_work_light": {
+   "color": "none"
+  },
+  "sa_decor:small_lamp": {
+   "color": "#E8D2B4"
+  },
+  "sa_decor:small_lamp_flickering": {
+   "color": "#E8D2B4"
+  },
+  "sa_decor:stove": {
+   "color": "#F59A55"
+  },
+  "sa_decor:stove_green": {
+   "color": "#F59A55"
+  },
+  "sa_decor:stove_red": {
+   "color": "#F59A55"
+  },
+  "sa_decor:street_light_lamp_flickering": {
+   "color": "#F0B060"
+  },
+  "sa_decor:street_light_lamp_on": {
+   "color": "#F0B060"
+  },
+  "scpo:flourecent_light": {
+   "color": "#DCE6F2"
+  },
+  "scpo:wall_light": {
+   "color": "#E8D2B4"
+  },
+  "securitycraft:alarm": {
+   "color": "#F0302A"
+  },
+  "securitycraft:deepslate_redstone_mine": {
+   "color": "#E04A3C"
+  },
+  "securitycraft:fake_lava_block": {
+   "color": "#FF7030"
+  },
+  "securitycraft:keypad_blast_furnace": {
+   "color": "#F59A55"
+  },
+  "securitycraft:keypad_furnace": {
+   "color": "#F59A55"
+  },
+  "securitycraft:keypad_smoker": {
+   "color": "#F59A55"
+  },
+  "securitycraft:motion_activated_light": {
+   "color": "#E8D2B4"
+  },
+  "securitycraft:panic_button": {
+   "color": "#FF757E"
+  },
+  "securitycraft:protecto": {
+   "color": "#81C2FF"
+  },
+  "securitycraft:redstone_mine": {
+   "color": "#E04A3C"
+  },
+  "securitycraft:reinforced_crying_obsidian": {
+   "color": "#A64CFF"
+  },
+  "securitycraft:reinforced_glowstone": {
+   "color": "#EED08E"
+  },
+  "securitycraft:reinforced_lantern": {
+   "color": "#AB935F"
+  },
+  "securitycraft:reinforced_lava_cauldron": {
+   "color": "#FF7030"
+  },
+  "securitycraft:reinforced_ochre_froglight": {
+   "color": "#FFE29A"
+  },
+  "securitycraft:reinforced_pearlescent_froglight": {
+   "color": "#FFD0F0"
+  },
+  "securitycraft:reinforced_redstone_lamp": {
+   "color": "none"
+  },
+  "securitycraft:reinforced_sea_lantern": {
+   "color": "#C4E2EE"
+  },
+  "securitycraft:reinforced_shroomlight": {
+   "color": "#D9B47A"
+  },
+  "securitycraft:reinforced_soul_lantern": {
+   "color": "#8CCAE3"
+  },
+  "securitycraft:reinforced_verdant_froglight": {
+   "color": "#C8FFB0"
+  },
+  "soviet:innerdeco/lamp/fluo_lamp": {
+   "color": "#DCE6F2"
+  },
+  "soviet:innerdeco/lamp/fluo_lamp2": {
+   "color": "#DCE6F2"
+  },
+  "soviet:innerdeco/lamp/fluo_lamp3": {
+   "color": "#DCE6F2"
+  },
+  "soviet:innerdeco/lamp/inc_lamp": {
+   "color": "#E8D2B4"
+  },
+  "soviet:innerdeco/lamp/red_lamp": {
+   "color": "#F0302A"
+  },
+  "supplementaries:blackstone_lamp": {
+   "color": "#9CF0FF"
+  },
+  "supplementaries:blaze_rod": {
+   "color": "#FFE659"
+  },
+  "supplementaries:candle_holder": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_black": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_blue": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_brown": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_cyan": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_gray": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_green": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_light_blue": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_light_gray": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_lime": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_magenta": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_orange": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_pink": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_purple": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_red": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_white": {
+   "color": "#E8B478"
+  },
+  "supplementaries:candle_holder_yellow": {
+   "color": "#E8B478"
+  },
+  "supplementaries:crystal_display": {
+   "color": "#A8C4E6"
+  },
+  "supplementaries:deepslate_lamp": {
+   "color": "#E8D2B4"
+  },
+  "supplementaries:end_stone_lamp": {
+   "color": "#F4FFC0"
+  },
+  "supplementaries:faucet": {
+   "color": "#FFC7B2"
+  },
+  "supplementaries:fire_pit": {
+   "color": "#F59A55"
+  },
+  "supplementaries:lumisene": {
+   "color": "#EED08E"
+  },
+  "supplementaries:redstone_illuminator": {
+   "color": "#E8D2B4"
+  },
+  "supplementaries:sconce": {
+   "color": "#E8D2B4"
+  },
+  "supplementaries:sconce_green": {
+   "color": "#7CFF5A"
+  },
+  "supplementaries:sconce_lever": {
+   "color": "#E8D2B4"
+  },
+  "supplementaries:sconce_soul": {
+   "color": "#8CCAE3"
+  },
+  "supplementaries:sconce_wall": {
+   "color": "#E8D2B4"
+  },
+  "supplementaries:sconce_wall_green": {
+   "color": "#7CFF5A"
+  },
+  "supplementaries:sconce_wall_soul": {
+   "color": "#8CCAE3"
+  },
+  "supplementaries:stone_lamp": {
+   "color": "#E8D2B4"
+  },
+  "suppsquared:brass_lantern": {
+   "color": "#EECD8B"
+  },
+  "suppsquared:copper_lantern": {
+   "color": "#D9B47A"
+  },
+  "suppsquared:crimson_lantern": {
+   "color": "#D9B47A"
+  },
+  "suppsquared:gold_candle_holder": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_black": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_blue": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_brown": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_cyan": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_gray": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_green": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_light_blue": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_light_gray": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_lime": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_magenta": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_orange": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_pink": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_purple": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_red": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_white": {
+   "color": "#E8B478"
+  },
+  "suppsquared:gold_candle_holder_yellow": {
+   "color": "#E8B478"
+  },
+  "suppsquared:sconce_lever_soul": {
+   "color": "#8CCAE3"
+  },
+  "tobacconistmod:flue_firebox": {
+   "color": "#F59A55"
+  },
+  "tobacconistmod:obsidian_hookah_block": {
+   "color": "#C9A8FF"
+  },
+  "tobacconistmod:redstone_hookah_block": {
+   "color": "#E04A3C"
+  },
+  "xkdeco:big_candlestick": {
+   "color": "#E8B478"
+  },
+  "xkdeco:blackstone_lamp": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:candlestick": {
+   "color": "#E8B478"
+  },
+  "xkdeco:covered_lamp": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:deepslate_lamp": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:emergency_exit": {
+   "color": "#5ADC72"
+  },
+  "xkdeco:emergency_exit_ground": {
+   "color": "#5ADC72"
+  },
+  "xkdeco:emergency_exit_left": {
+   "color": "#5ADC72"
+  },
+  "xkdeco:emergency_exit_right": {
+   "color": "#5ADC72"
+  },
+  "xkdeco:factory_ceiling_lamp": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:factory_lamp": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:factory_lamp_block": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:factory_lamp_slab": {
+   "color": "#F59A55"
+  },
+  "xkdeco:factory_light_bar": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:factory_pendant": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:factory_warning_lamp": {
+   "color": "#F0302A"
+  },
+  "xkdeco:festival_lantern": {
+   "color": "#FF9A40"
+  },
+  "xkdeco:oil_lamp": {
+   "color": "#D9B47A"
+  },
+  "xkdeco:paper_lantern": {
+   "color": "#E8B478"
+  },
+  "xkdeco:red_lantern": {
+   "color": "#C8505A"
+  },
+  "xkdeco:roofed_lamp": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:screen_cube": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:screen_diagram": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:screen_dna": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:screen_list": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:screen_message": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:screen_three_bodies": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:screen_transport": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:screen_wave": {
+   "color": "#A8C4E6"
+  },
+  "xkdeco:small_sign_ground": {
+   "color": "#5ADC72"
+  },
+  "xkdeco:small_sign_left": {
+   "color": "#5ADC72"
+  },
+  "xkdeco:small_sign_right": {
+   "color": "#5ADC72"
+  },
+  "xkdeco:stone_lamp": {
+   "color": "#E8D2B4"
+  },
+  "xkdeco:tech_lamp_block": {
+   "color": "#E4EAF2"
+  },
+  "xkdeco:tech_lamp_slab": {
+   "color": "#E4EAF2"
+  },
+  "xkdeco:translucent_lamp_block": {
+   "color": "#E4EAF2"
+  },
+  "xkdeco:translucent_lamp_slab": {
+   "color": "#E4EAF2"
+  },
+  "xkdeco:translucent_lamp_stairs": {
+   "color": "#E4EAF2"
+  },
+  "zerocontact:thoughbook": {
+   "color": "none"
+  },
+  "zombie_extreme:deepslate_thorium": {
+   "color": "none"
+  },
+  "zombie_extreme:lamp": {
+   "color": "#E8D2B4"
+  },
+  "zombie_extreme:thorium_ore": {
+   "color": "none"
+  }
+ },
+ "items": {
+  "minecraft:lava_bucket": {
+   "color": "#FF7030",
+   "level": 15
+  }
+ }
+}

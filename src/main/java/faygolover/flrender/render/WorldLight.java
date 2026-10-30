@@ -64,7 +64,7 @@ public final class WorldLight {
     /** С паком рука в середине диапазона глубины: ближе этого — рука. */
     private static final float PACK_HAND_DEPTH = 0.75f;
     /** Насколько цвет блоков-источников перекрашивает освещённое ими (1 — чистый цвет, как от светодиода). */
-    private static final float TINT_STRENGTH = 0.95f;
+    private static final float TINT_STRENGTH = 0.85f;
     /** Яркость своего канала в перекрашенном (остальные гаснут — свет не кажется тусклее). */
     private static final float TINT_BOOST = 1.8f;
 

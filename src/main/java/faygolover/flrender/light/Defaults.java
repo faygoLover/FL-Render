@@ -13,7 +13,26 @@ final class Defaults {
     private static final String FIRE = "#FF7A20";
     private static final String LAVA = "#FF5A10";
 
+    /** Таблица из галереи источников света (gallery/export.py) в jar; без неё — короткий список ниже. */
     static JsonObject json() {
+        try (var in = Defaults.class.getResourceAsStream("/assets/flrender/default_colors.json")) {
+            if (in != null) {
+                JsonObject root = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+                root.addProperty("_help", HELP);
+                return root;
+            }
+        } catch (Exception e) {
+            faygolover.flrender.FlRenderMod.LOGGER.warn("FL Render: таблица цветов по умолчанию не прочитана", e);
+        }
+        return fallback();
+    }
+
+    private static final String HELP = "Coloured light sources. blocks/items: id -> {color: #RRGGBB or none, level: 1-15 (optional, default = the block's own light),"
+            + " shaders: true/false (optional: also with a shader pack on; default false for minecraft:, true for other mods)}."
+            + " The hue is the colour, its brightness is the strength (darker = weaker tint); none = no colour, white light."
+            + " A block's item (torch in hand) takes the block's colour.";
+
+    private static JsonObject fallback() {
         JsonObject root = new JsonObject();
         root.addProperty("version", 1);
         root.addProperty("_help", "Coloured light sources. blocks/items: id -> {color: #RRGGBB, level: 1-15 (optional, default = the block's own light),"

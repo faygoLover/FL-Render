@@ -1,6 +1,6 @@
 // Галерея «Источники света»: какие светящиеся блоки у нас в ходу (★) и какой цвет им давать в FL Render.
 // Отметки — в сторе хаба 'review' заплатками {patch: {id: {use, color, comment} | null}}; color: '#RRGGBB', 'none' или нет (= предложено).
-let blocks = [], byId = {}, review = { items: {} }, tab = 'all';
+let blocks = [], byId = {}, review = { items: {} }, tab = 'all', presets = [], presetById = {};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* без хранилища */ } };
@@ -9,6 +9,8 @@ const load = k => { try { return localStorage.getItem(k); } catch (e) { return n
 async function start() {
   blocks = await (await fetch('data/blocks.json', { cache: 'no-store' })).json();
   for (const b of blocks) byId[b.id] = b;
+  presets = await (await fetch('data/presets.json', { cache: 'no-store' })).json();
+  for (const p of presets) presetById[p.id] = p;
   try {
     const r = await fetch('api/review', { cache: 'no-store' });
     if (r.ok) review = await r.json();
@@ -82,10 +84,25 @@ function edit(id, fn) {
 
 /** Итоговый цвет блока: '#RRGGBB' или null (без цвета). */
 function colorOf(b) {
-  const c = review.items[b.id]?.color;
-  if (c === 'none') return null;
-  if (c) return c;
+  const r = review.items[b.id] || {};
+  if (r.color === 'none') return null;
+  if (r.preset && presetById[r.preset]) return presetById[r.preset].color;
+  if (r.color) return r.color;
   return b.prop || null;
+}
+
+/** Что выбрано в списке: '' — как предложено, id пресета, 'none', 'custom'. */
+function choiceOf(r) {
+  if (!r) return '';
+  if (r.color === 'none') return 'none';
+  if (r.preset) return r.preset;
+  if (r.color) return 'custom';
+  return '';
+}
+
+function propLabel(b) {
+  if (!b.prop) return 'предложено: без цвета';
+  return 'предложено: ' + (b.preset && presetById[b.preset] ? presetById[b.preset].name : b.prop);
 }
 
 // ------------------------------------------------------------------ вкладки
@@ -120,7 +137,7 @@ function visible() {
       case 'none': return !b.prop;
       case 'inv': return b.invisible || !b.img;
       case 'switch': return b.switch;
-      case 'mine': return !!r?.color;
+      case 'mine': return !!(r?.color || r?.preset);
       case 'unmarked': return !r;
     }
     return true;
@@ -155,11 +172,17 @@ const cssId = id => id.replace(/[^a-z0-9_-]/gi, '_');
 function cardInner(b) {
   const r = review.items[b.id] || {};
   const pic = b.img ? `<img src="${b.img}" loading="lazy" alt="">` : `<div class="nopic">${b.invisible ? 'невидимый<br>блок' : 'нет<br>картинки'}</div>`;
-  const prop = b.prop ? `<span class="chip" style="background:${b.prop}"></span>` : '○';
-  const custom = r.color && r.color !== 'none' ? r.color : (b.prop || '#ffffff');
+  const ch = choiceOf(r);
+  const custom = r.color && r.color !== 'none' ? r.color : (colorOf(b) || '#ffffff');
+  const opts = [`<option value="">${esc(propLabel(b))}</option>`]
+    .concat(presets.map(p => `<option value="${p.id}"${ch === p.id ? ' selected' : ''}>${esc(p.name)}</option>`))
+    .concat([`<option value="none"${ch === 'none' ? ' selected' : ''}>без цвета (белый свет)</option>`,
+      `<option value="custom"${ch === 'custom' ? ' selected' : ''}>свой цвет…</option>`]);
+  const now = colorOf(b);
   const meta = [`свет ${b.max}`];
   if (b.switch) meta.push('вкл/выкл');
   if (b.cur) meta.push(`сейчас <span class="chip" style="background:${b.cur}"></span>`);
+  if (b.glow) meta.push(`загорается <span class="chip" style="background:${b.glow}"></span>`);
   if (b.src) meta.push(esc(b.src));
   return `<div class="row"><div class="pic">${pic}</div><canvas width="128" height="64"></canvas></div>
     <div class="nm">${esc(b.name)}</div><div class="id">${esc(b.id)}</div>
@@ -167,9 +190,9 @@ function cardInner(b) {
     ${r.comment ? `<div class="cm">${esc(r.comment)}</div>` : ''}
     <div class="btns">
       <button class="star${r.use ? ' on' : ''}" data-a="use" title="используем">★</button>
-      <button data-a="prop" class="${!r.color ? 'on' : ''}" title="как предложено${b.prop ? ' (' + b.prop + ')' : ': без цвета'}">${prop}</button>
-      <button data-a="none" class="${r.color === 'none' ? 'on' : ''}" title="обычный белый свет">без цвета</button>
-      <label class="${r.color && r.color !== 'none' ? 'on' : ''}" title="свой цвет"><input type="color" value="${custom}"></label>
+      <span class="chip big" style="background:${now || 'transparent'}" title="${now || 'без цвета'}"></span>
+      <select class="pre${ch ? ' on' : ''}">${opts.join('')}</select>
+      <label title="свой цвет"${ch === 'custom' ? '' : ' hidden'}><input type="color" value="${custom}"></label>
       <button class="c" data-a="cm" title="комментарий">💬</button>
     </div>`;
 }
@@ -197,17 +220,25 @@ $('#grid').addEventListener('click', e => {
   const id = btn.closest('.card').dataset.id;
   const a = btn.dataset.a;
   if (a === 'use') edit(id, r => { r.use = !r.use; });
-  if (a === 'prop') edit(id, r => { r.color = undefined; });
-  if (a === 'none') edit(id, r => { r.color = r.color === 'none' ? undefined : 'none'; });
   if (a === 'cm') {
     const t = prompt('Комментарий', review.items[id]?.comment || '');
     if (t !== null) edit(id, r => { r.comment = t.trim(); });
   }
 });
 $('#grid').addEventListener('change', e => {
-  if (e.target.type !== 'color') return;
-  const id = e.target.closest('.card').dataset.id;
-  edit(id, r => { r.color = e.target.value.toUpperCase(); });
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const id = card.dataset.id;
+  if (e.target.type === 'color') edit(id, r => { r.preset = undefined; r.color = e.target.value.toUpperCase(); });
+  if (e.target.classList.contains('pre')) {
+    const v = e.target.value;
+    edit(id, r => {
+      if (v === '') { r.preset = undefined; r.color = undefined; }
+      else if (v === 'none') { r.preset = undefined; r.color = 'none'; }
+      else if (v === 'custom') { r.preset = undefined; r.color = (colorOf(byId[id]) || '#FFFFFF').toUpperCase(); }
+      else { r.preset = v; r.color = undefined; }
+    });
+  }
 });
 // Живое превью, пока крутят палитру (без сохранения).
 $('#grid').addEventListener('input', e => {
@@ -259,10 +290,11 @@ function drawWith(canvas, b, color) {
     const shade = floor ? 0.72 : 1;
     let r = stoneTex[t] / 255 * bright * shade, gg = stoneTex[t + 1] / 255 * bright * shade, bb = stoneTex[t + 2] / 255 * bright * shade;
     if (half === 1 && h && lv > 0) {
-      const k = 0.95;
-      r = r + (Math.min(1, r * h[0] * 1.8) - r) * k;
-      gg = gg + (Math.min(1, gg * h[1] * 1.8) - gg) * k;
-      bb = bb + (Math.min(1, bb * h[2] * 1.8) - bb) * k;
+      // Как в шейдере: усиление с сохранением яркости (до 1.8), сила 0.85.
+      const amt = 0.85 * top, boost = Math.min(1.8, Math.max(1, 1 / Math.max(0.05, h[0] * 0.299 + h[1] * 0.587 + h[2] * 0.114)));
+      r = r + (Math.min(1, r * h[0] * boost) - r) * amt;
+      gg = gg + (Math.min(1, gg * h[1] * boost) - gg) * amt;
+      bb = bb + (Math.min(1, bb * h[2] * boost) - bb) * amt;
     }
     const o = (y * W + x) * 4;
     px[o] = r * 255; px[o + 1] = gg * 255; px[o + 2] = bb * 255; px[o + 3] = 255;
@@ -286,13 +318,12 @@ function renderOut() {
   const colours = {}, none = [];
   for (const b of blocks) {
     const r = review.items[b.id];
-    if (!r?.use && !r?.color) continue;   // в итог — только то, что отметили
     const c = colorOf(b);
     if (c) colours[b.id] = { color: c };
     else none.push(b.id);
   }
   $('#out-sum').textContent = `используем: ${used.length}; с цветом: ${Object.keys(colours).length}; без цвета: ${none.length}`;
-  $('#json').value = JSON.stringify({ use: used.map(b => b.id), blocks: colours, no_color: none }, null, 2);
+  $('#json').value = JSON.stringify({ use: used.map(b => b.id), blocks: colours, no_color: none.filter(id => byId[id].max > 3) }, null, 2);
 }
 
 start();

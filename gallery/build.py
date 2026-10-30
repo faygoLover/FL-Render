@@ -42,21 +42,12 @@ def parse_state(s):
     m = re.search(r'\[(.*)\]$', s or '')
     return dict(kv.split('=', 1) for kv in m.group(1).split(',') if '=' in kv) if m else {}
 
-DYES = {
-    'white': '#F4F4F4', 'orange': '#FF8A1E', 'magenta': '#E040E0', 'light_blue': '#5AC8FF', 'yellow': '#FFE030',
-    'lime': '#8CFF30', 'pink': '#FF7AB4', 'gray': '#8C8C8C', 'light_gray': '#C8C8C8', 'cyan': '#20E0E0',
-    'purple': '#A040FF', 'blue': '#3050FF', 'brown': '#A0602C', 'green': '#30C030', 'red': '#FF2A1A', 'black': '#303030',
-}
-FLAME, SOUL = '#FF9A3C', '#3CC8FF'
-# Невидимые и без картинки — по названию.
-BY_ID = {
-    'minecraft:light': None, 'minecraft:lava': '#FF5A10', 'minecraft:end_portal': '#40E0B0', 'minecraft:end_gateway': '#B060FF',
-    'exposure:flash': None, 'sa_decor:work_light_beam': None, 'pneumaticcraft:kerosene_lamp_light': '#FFB060',
-    'alexscaves:ambersol_light': '#FFB040', 'alexscaves:acid': '#9CFF30', 'blocksyouneed_luna:liquid_illumina': None,
-    'securitycraft:fake_lava_block': '#FF5A10', 'mekanism:bounding_block': None, 'supplementaries:block_generator': None,
-    'amendments:skull_candle': FLAME, 'amendments:skull_candle_wall': FLAME,
-    'amendments:skull_candle_soul': SOUL, 'amendments:skull_candle_soul_wall': SOUL,
-}
+import presets as P
+
+# Светящиеся материалы, у которых цвет по текстуре уместен (остальные редкие блоки — без цвета).
+GLOWY = re.compile(r'crystal|corundum|quartz|shroom|mushroom|glow|portal|core|rod|antiblock|pickle|cave_vines|obsidian|uranium|amber|'
+                   r'heater|кристал|корунд|гриб|светя|портал|ядро|стерж|антиблок|лоза|обсидиан|уран|янтар|кварц|дыня|тыкв|кость')
+SWITCH_KEYS = ('lit', 'powered', 'active', 'enabled', 'toggled', 'luminance', 'on', 'loaded')
 
 
 def hexc(r, g, b):
@@ -94,6 +85,32 @@ def from_image(img):
     return hexc(*h)
 
 
+def glow_diff(on, off):
+    """Цвет пикселей, которые во включённом виде стали ярче; None — загорается белым; '' — разницы нет."""
+    a = np.asarray(on.convert('RGBA')).astype(np.float32)
+    b = np.asarray(off.convert('RGBA')).astype(np.float32)
+    w = np.array([0.299, 0.587, 0.114], np.float32)
+    la, lb = a[..., :3] @ w, b[..., :3] @ w
+    mask = (a[..., 3] > 200) & (la - lb > 25)
+    if mask.sum() < 6:
+        return ''
+    c = a[..., :3][mask].mean(axis=0)
+    mx, mn = c.max(), c.min()
+    if mx < 50:
+        return ''
+    if (mx - mn) / mx < 0.18:
+        return None
+    return hexc(*(c / mx * 255))
+
+
+def soften(hx, k=0.7):
+    """Цвет мягче: к белому на 1 − k (у всего, что не задумано цветным)."""
+    if not hx:
+        return hx
+    r, g, b = (int(hx[i:i + 2], 16) for i in (1, 3, 5))
+    return hexc(*(255 - (255 - v) * k for v in (r, g, b)))
+
+
 def from_map(col):
     r, g, b = col >> 16 & 255, col >> 8 & 255, col & 255
     mx, mn = max(r, g, b), min(r, g, b)
@@ -118,41 +135,51 @@ def main():
         img, kind = None, 'none'
         LIT.clear()
         LIT.update(parse_state(d.get('best_state')))
+        diff = ''
         if not d['invisible']:
             try:
                 img, kind, _ = co.render_block(res, bid)
+                # Выключенный вид — для сравнения: цвет того, что загорается.
+                off = {k: 'false' for k, v in LIT.items() if k in SWITCH_KEYS and v == 'true'}
+                if img is not None and off:
+                    LIT.update(off)
+                    img_off, _, _ = co.render_block(res, bid)
+                    if img_off is not None and img_off.size == img.size:
+                        diff = glow_diff(img, img_off)
             except Exception as ex:  # кривая модель мода — без картинки
                 print('render failed', bid, ex)
         fn = re.sub(r'[^a-z0-9_.-]', '_', bid.replace(':', '__')) + '.png'
         if img is not None:
             img.save(IMG / fn, optimize=True)
-        # Предложение.
-        src, prop = '', None
-        if d['max'] <= 3 and 'flrender' not in d:
+        # Предложение: пресет по названию, иначе — цвет загорающейся части (вкл/выкл) или текстуры, мягче.
+        name = d['name'] if not str(d['name']).startswith('block.') else (ru.get(key) or en.get(key) or p.replace('_', ' '))
+        preset, src = None, ''
+        if d['max'] <= 3:
             src = 'слабый свет — цвет не заметен'
-        elif 'flrender' in d:
-            prop, src = from_flrender(d['flrender']), 'сейчас в FL Render'
-        elif bid in BY_ID:
-            prop, src = BY_ID[bid], 'по названию'
         else:
-            m = re.search(r'(?:^|_)(light_blue|light_gray|white|orange|magenta|yellow|lime|pink|gray|cyan|purple|blue|brown|green|red|black)(?:_|$)', p)
-            if 'soul' in p:
-                prop, src = SOUL, 'по названию (душ)'
-            elif 'redstone' in p and 'lamp' not in p:
-                prop, src = '#FF2A1A', 'по названию (редстоун)'
-            elif re.search(r'(?:^|_)(candles?|torch|campfire|fire|brazier|candelabra|kerosene|oil_lamp|fireplace)(?:_|$)', p):
-                prop, src = FLAME, 'по названию (огонь)'
-            elif m and m.group(1) not in ('white', 'gray', 'light_gray', 'black'):
-                prop, src = DYES[m.group(1)], 'по названию (цвет)'
-            elif img is not None and (c := from_image(img)) != '':
-                prop, src = c, 'по текстуре'
-            elif d.get('map_color'):
-                prop, src = from_map(d['map_color']), 'по цвету на карте'
+            preset, src = P.classify(bid, name, ns)
+            if preset == '':
+                preset = None
+                if diff not in ('', None):
+                    preset, src = soften(diff), 'загорается этим цветом (вкл/выкл)'
+                elif diff is None:
+                    src = 'загорается белым (вкл/выкл)'
+                elif 'flrender' in d:
+                    preset, src = from_flrender(d['flrender']), 'сейчас в FL Render'
+                elif not GLOWY.search(p + ' ' + name.lower()):
+                    src = 'редкий блок — без цвета'
+                elif img is not None and (c := from_image(img)):
+                    preset, src = soften(c), 'по текстуре (мягче)'
+                elif not src:
+                    src = 'по текстуре — белый'
+        prop = P.PRESET_COLOR.get(preset, preset) if preset else None
         e = {'id': bid, 'ns': ns, 'mod': res.modnames.get(ns, ns),
-             'name': d['name'] if not str(d['name']).startswith('block.') else (ru.get(key) or en.get(key) or p.replace('_', ' ')),
+             'name': name,
              'en': en.get(key, ''), 'max': d['max'], 'levels': d['levels'], 'switch': d['lit_states'] < d['states'],
              'img': ('img/' + fn) if img is not None else None, 'invisible': d['invisible'] or d['air'],
-             'prop': prop, 'src': src}
+             'prop': prop, 'preset': preset if preset in P.PRESET_COLOR else None, 'src': src}
+        if diff:
+            e['glow'] = diff
         if 'flrender' in d:
             e['cur'] = from_flrender(d['flrender'])
             if not d['flrender']['with_shaders']:
@@ -162,6 +189,8 @@ def main():
             print(i, '/', len(dump), flush=True)
     # Сильные источники — вперёд (слабый свет 1–3 обычно ставят моды, чтобы модель не была чёрной).
     out.sort(key=lambda e: (e['max'] <= 3, e['id']))
+    (SITE / 'data/presets.json').write_text(json.dumps([{'id': i, 'name': n, 'color': c} for i, n, c in P.PRESETS],
+                                                       ensure_ascii=False), 'utf-8')
     (SITE / 'data/blocks.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')), 'utf-8')
     props = sum(1 for e in out if e['prop'])
     print('блоков:', len(out), ' с предложенным цветом:', props, ' без цвета:', len(out) - props,

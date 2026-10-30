@@ -44,7 +44,20 @@ public final class ColorTable {
     public record Entry(float r, float g, float b, int level, boolean withShaders) {
     }
 
-    private static final int VERSION = 1;
+    /** 2 (30.10): таблица по умолчанию из галереи источников света ({@code assets/flrender/default_colors.json}). */
+    private static final int VERSION = 2;
+    /** Цвета по умолчанию версии 1 — такие строки в файле игрока считаются не правленными и обновляются. */
+    private static final Map<String, String> V1 = Map.ofEntries(
+            Map.entry("minecraft:torch", "#FF9A3C"), Map.entry("minecraft:wall_torch", "#FF9A3C"),
+            Map.entry("minecraft:soul_torch", "#3CC8FF"), Map.entry("minecraft:soul_wall_torch", "#3CC8FF"),
+            Map.entry("minecraft:redstone_torch", "#FF2A1A"), Map.entry("minecraft:redstone_wall_torch", "#FF2A1A"),
+            Map.entry("minecraft:redstone_wire", "#FF2A1A"), Map.entry("minecraft:lantern", "#FFB050"),
+            Map.entry("minecraft:soul_lantern", "#3CC8FF"), Map.entry("minecraft:lava", "#FF5A10"),
+            Map.entry("minecraft:fire", "#FF7A20"), Map.entry("minecraft:soul_fire", "#3CC8FF"),
+            Map.entry("minecraft:campfire", "#FF7A20"), Map.entry("minecraft:soul_campfire", "#3CC8FF"),
+            Map.entry("minecraft:glowstone", "#FFD080"));
+    /** Явно без цвета ({@code "color": "none"}) — снимает и цвет, заданный модом из кода. */
+    private static final java.util.Set<String> NONE_BLOCKS = new java.util.HashSet<>(), NONE_ITEMS = new java.util.HashSet<>();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     private static final Map<String, Entry> BLOCK_IDS = new LinkedHashMap<>();
@@ -116,6 +129,10 @@ public final class ColorTable {
                     Block b = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryParse(e.getKey()));
                     if (b != null && b != Blocks.AIR) m.put(b, e.getValue());
                 }
+                for (String id : NONE_BLOCKS) {
+                    Block b = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryParse(id));
+                    if (b != null) m.remove(b);
+                }
                 blocks = m;
             }
         }
@@ -131,6 +148,10 @@ public final class ColorTable {
                 for (Map.Entry<String, Entry> e : ITEM_IDS.entrySet()) {
                     Item i = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(e.getKey()));
                     if (i != null && i != net.minecraft.world.item.Items.AIR) m.put(i, e.getValue());
+                }
+                for (String id : NONE_ITEMS) {
+                    Item i = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(id));
+                    if (i != null) m.remove(i);
                 }
                 items = m;
             }
@@ -155,19 +176,22 @@ public final class ColorTable {
         if (root == null) {
             root = defaults;
         } else if (!root.has("version") || root.get("version").getAsInt() < VERSION) {
-            // Новые строки по умолчанию дописываются, свои правки игрока остаются.
+            // Новые строки по умолчанию дописываются, прежние строки по умолчанию обновляются, свои правки игрока остаются.
             for (String section : new String[]{"blocks", "items"}) {
                 if (!root.has(section)) root.add(section, new JsonObject());
                 JsonObject mine = root.getAsJsonObject(section);
                 for (Map.Entry<String, JsonElement> e : defaults.getAsJsonObject(section).entrySet()) {
-                    if (!mine.has(e.getKey())) mine.add(e.getKey(), e.getValue());
+                    JsonElement old = mine.get(e.getKey());
+                    boolean stock = old != null && old.isJsonObject() && old.getAsJsonObject().size() == 1 && old.getAsJsonObject().has("color")
+                            && old.getAsJsonObject().get("color").getAsString().equalsIgnoreCase(V1.getOrDefault(e.getKey(), "-"));
+                    if (old == null || stock) mine.add(e.getKey(), e.getValue());
                 }
             }
             root.addProperty("version", VERSION);
             write = true;
         }
-        read(root.getAsJsonObject("blocks"), BLOCK_IDS);
-        read(root.getAsJsonObject("items"), ITEM_IDS);
+        read(root.getAsJsonObject("blocks"), BLOCK_IDS, NONE_BLOCKS);
+        read(root.getAsJsonObject("items"), ITEM_IDS, NONE_ITEMS);
         if (write) {
             try {
                 Files.createDirectories(f.getParent());
@@ -180,13 +204,17 @@ public final class ColorTable {
         }
     }
 
-    private static void read(@Nullable JsonObject section, Map<String, Entry> out) {
+    private static void read(@Nullable JsonObject section, Map<String, Entry> out, java.util.Set<String> none) {
         if (section == null) return;
         for (Map.Entry<String, JsonElement> e : section.entrySet()) {
             if (!e.getValue().isJsonObject()) continue;
             JsonObject o = e.getValue().getAsJsonObject();
             try {
                 String hex = o.get("color").getAsString().trim();
+                if (hex.equalsIgnoreCase("none")) {
+                    none.add(e.getKey().toLowerCase(Locale.ROOT));
+                    continue;
+                }
                 if (hex.startsWith("#")) hex = hex.substring(1);
                 int rgb = Integer.parseInt(hex, 16);
                 int level = o.has("level") ? o.get("level").getAsInt() : 0;
