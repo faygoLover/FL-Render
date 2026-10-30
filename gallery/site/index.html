@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Источники света</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>Источники света — цветной свет FL Render</h1>
+    <span id="saved"></span>
+  </div>
+  <nav id="tabs">
+    <button data-tab="all">Все <b id="n-all"></b></button>
+    <button data-tab="use">Используем ★ <b id="n-use"></b></button>
+    <button data-tab="out">Итог</button>
+  </nav>
+  <div id="filters">
+    <input id="q" type="search" placeholder="поиск: название или id">
+    <select id="mod"></select>
+    <select id="flag">
+      <option value="">все блоки</option>
+      <option value="strong">свет 4 и сильнее</option>
+      <option value="weak">слабый свет 1–3</option>
+      <option value="cur">уже с цветом в FL Render</option>
+      <option value="prop">предложен цвет</option>
+      <option value="none">предложено без цвета</option>
+      <option value="inv">невидимые</option>
+      <option value="switch">включаются / выключаются</option>
+      <option value="mine">с моим выбором цвета</option>
+      <option value="unmarked">без отметок</option>
+    </select>
+    <span id="shown"></span>
+  </div>
+</header>
+<p id="hint">★ — этот блок у нас в ходу. Цвет: <b>предложено</b> (кружок — мой вариант), <b>без цвета</b> — обычный белый свет, как сейчас без мода,
+  или <b>свой</b>. Превью: слева ванильный свет на каменной стене, справа — с подкраской FL Render. 💬 — комментарий.</p>
+<main id="grid"></main>
+<section id="out" hidden>
+  <p id="out-sum"></p>
+  <p>Это уйдёт в FL Render: цвета — в таблицу цветов по умолчанию, «без цвета» — блок не подкрашивается. Список «используем» — для оптимизации.</p>
+  <button id="copy">Скопировать</button>
+  <textarea id="json" readonly></textarea>
+</section>
+<script src="app.js"></script>
+</body>
+</html>
