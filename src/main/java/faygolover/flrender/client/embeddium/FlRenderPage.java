@@ -60,6 +60,14 @@ final class FlRenderPage {
                         .setImpact(OptionImpact.HIGH)
                         .setBinding((s, v) -> Settings.setQuality(v), s -> Settings.quality())
                         .build())
+                .add(OptionImpl.createBuilder(faygolover.flrender.config.ColorRange.class, STORAGE)
+                        .setId(new ResourceLocation(FlRender.MODID, "color_light_range"))
+                        .setName(Component.translatable("flrender.option.color_range"))
+                        .setTooltip(Component.translatable("flrender.option.color_range.tooltip"))
+                        .setControl(o -> new CyclingControl<>(o, faygolover.flrender.config.ColorRange.class, rangeNames()))
+                        .setImpact(OptionImpact.MEDIUM)
+                        .setBinding((s, v) -> Settings.setColorRange(v), s -> Settings.colorRange())
+                        .build())
                 .build());
 
         Component[] toggleNames = new Component[Toggle.values().length];
@@ -85,6 +93,13 @@ final class FlRenderPage {
             groups.add(g.build());
         }
         return new OptionPage(Component.literal("FL Render"), ImmutableList.copyOf(groups));
+    }
+
+    private static Component[] rangeNames() {
+        var values = faygolover.flrender.config.ColorRange.values();
+        Component[] out = new Component[values.length];
+        for (var r : values) out[r.ordinal()] = Component.translatable("flrender.color_range." + r.name().toLowerCase(Locale.ROOT));
+        return out;
     }
 
     private static String modName(String modid) {

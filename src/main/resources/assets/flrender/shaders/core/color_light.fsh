@@ -16,7 +16,9 @@ uniform sampler3D AddVol;
 uniform mat4 InvProjMat;
 uniform mat4 InvViewMat;
 uniform vec3 VolOrigin;
-uniform float VolSize;
+uniform vec3 VolSize;
+uniform vec3 AddOrigin;
+uniform vec3 AddSize;
 uniform float HasAdd;
 uniform float Tint;
 uniform float Boost;
@@ -43,9 +45,17 @@ void main() {
     if (any(lessThan(q, vec3(0.0))) || any(greaterThan(q, vec3(1.0)))) {
         discard;
     }
-    // Fade out near the edges of the volume.
+    // Fade out towards the edges of the tint box: softly over the outer fifth sideways (it reaches the render
+    // distance or the player's limit), over 8 blocks up and down - no hard line where the tint ends.
     vec3 e = min(q, vec3(1.0) - q) * VolSize;
-    float edge = clamp(min(e.x, min(e.y, e.z)) / 4.0, 0.0, 1.0);
+    vec3 fade = vec3(max(8.0, VolSize.x * 0.1), 8.0, max(8.0, VolSize.z * 0.1));
+    vec3 ef = clamp(e / fade, 0.0, 1.0);
+    float edge = ef.x * ef.y * ef.z;
+    edge = edge * edge * (3.0 - 2.0 * edge);
+    // The small cube of moving lights round the camera.
+    vec3 qa = (p - AddOrigin + n * 0.5) / AddSize;
+    vec3 ea = clamp(min(qa, vec3(1.0) - qa) * AddSize / 4.0, 0.0, 1.0);
+    float addEdge = ea.x * ea.y * ea.z;
 
     vec3 scene = texture(SceneSampler, texCoord).rgb;
     vec3 col = scene;
@@ -59,7 +69,7 @@ void main() {
         changed = true;
     }
     if (HasAdd > 0.5) {
-        vec3 a = texture(AddVol, q).rgb * 2.0 * edge * (1.0 - 0.8 * NightVision);
+        vec3 a = texture(AddVol, clamp(qa, 0.0, 1.0)).rgb * 2.0 * addEdge * (1.0 - 0.8 * NightVision);
         if (a.r + a.g + a.b > 0.003) {
             col += a * (scene * 1.2 + 0.2);
             changed = true;

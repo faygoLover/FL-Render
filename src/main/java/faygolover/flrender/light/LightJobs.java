@@ -11,13 +11,17 @@ import java.util.List;
  *   <li>{@link #dynamics} — подвижные источники (эффекты, предметы в руках): свет складывается, спадает квадратично,
  *       хранится вдвое слабее (запас до двойной силы). Это добавка света поверх кадра.</li>
  * </ul>
- * Объём — куб {@code size}³ блоков с углом {@code origin}; индекс блока {@code x + size * (y + size * z)}.
+ * Объём — коробка {@code hs × vs × hs} блоков (по горизонтали шире, 30.10) с углом {@code origin}; индекс блока
+ * {@code x + hs * (y + vs * z)}.
  */
 final class LightJobs {
     private LightJobs() {}
 
     /** Мир объёма: потери света по блокам и небесный свет (0–15). */
-    record World(int ox, int oy, int oz, int size, byte[] att, byte[] sky, byte[] blk) {
+    record World(int ox, int oy, int oz, int hs, int vs, byte[] att, byte[] sky, byte[] blk) {
+        int cells() {
+            return hs * vs * hs;
+        }
     }
 
     /** Подвижный источник (координаты мира). Прямоугольник: {@code nx, nz} — нормаль, {@code w, h} > 0. */
@@ -25,23 +29,38 @@ final class LightJobs {
                float nx, float nz, float w, float h, boolean bothSides) {
     }
 
-    /** Собрать мир объёма из секций (все должны быть готовы). */
-    static World world(int ox, int oy, int oz, int size, SectionCache.Data[] sections) {
-        int n = size >> 4;
-        byte[] att = new byte[size * size * size];
-        byte[] sky = new byte[size * size * size];
-        byte[] blk = new byte[size * size * size];
-        for (int cz = 0; cz < n; cz++) for (int cy = 0; cy < n; cy++) for (int cx = 0; cx < n; cx++) {
-            SectionCache.Data d = sections[cx + n * (cy + n * cz)];
+    /** Собрать мир объёма из секций (все должны быть готовы; индекс секции {@code cx + nh * (cy + nv * cz)}). */
+    static World world(int ox, int oy, int oz, int hs, int vs, SectionCache.Data[] sections) {
+        int nh = hs >> 4, nv = vs >> 4, cells = hs * vs * hs;
+        byte[] att = new byte[cells];
+        byte[] sky = new byte[cells];
+        byte[] blk = new byte[cells];
+        for (int cz = 0; cz < nh; cz++) for (int cy = 0; cy < nv; cy++) for (int cx = 0; cx < nh; cx++) {
+            SectionCache.Data d = sections[cx + nh * (cy + nv * cz)];
             for (int y = 0; y < 16; y++) for (int z = 0; z < 16; z++) {
                 int src = 16 * (z + 16 * y);
-                int dst = (cx << 4) + size * ((cy << 4) + y + size * ((cz << 4) + z));
+                int dst = (cx << 4) + hs * ((cy << 4) + y + vs * ((cz << 4) + z));
                 System.arraycopy(d.att(), src, att, dst, 16);
                 System.arraycopy(d.sky(), src, sky, dst, 16);
                 System.arraycopy(d.blk(), src, blk, dst, 16);
             }
         }
-        return new World(ox, oy, oz, size, att, sky, blk);
+        return new World(ox, oy, oz, hs, vs, att, sky, blk);
+    }
+
+    /** Кусок мира (для подвижных источников — малый куб у камеры внутри большого объёма). Только потери света. */
+    static World sub(World w, int ox, int oy, int oz, int hs, int vs) {
+        int cells = hs * vs * hs;
+        byte[] att = new byte[cells];
+        java.util.Arrays.fill(att, (byte) 15);
+        for (int z = 0; z < hs; z++) for (int y = 0; y < vs; y++) {
+            int wz = oz + z - w.oz(), wy = oy + y - w.oy();
+            if (wz < 0 || wz >= w.hs() || wy < 0 || wy >= w.vs()) continue;
+            int x0 = Math.max(0, w.ox() - ox), x1 = Math.min(hs, w.ox() + w.hs() - ox);
+            if (x1 <= x0) continue;
+            System.arraycopy(w.att(), (ox + x0 - w.ox()) + w.hs() * (wy + w.vs() * wz), att, x0 + hs * (y + vs * z), x1 - x0);
+        }
+        return new World(ox, oy, oz, hs, vs, att, null, null);
     }
 
     /**
@@ -49,18 +68,18 @@ final class LightJobs {
      * где источник главный — 1, «светодиод»; a — небесный свет). {@code none} — без источников (только небо).
      */
     static byte[] statics(World w, SectionCache.Data[] sections, boolean none) {
-        int size = w.size(), n = size >> 4, cells = size * size * size;
+        int hs = w.hs(), vs = w.vs(), nh = hs >> 4, nv = vs >> 4, cells = w.cells();
         byte[] out = new byte[cells * 4];
         for (int i = 0; i < cells; i++) out[i * 4 + 3] = (byte) Math.min(255, (w.sky()[i] & 255) * 17);
         Flood flood = new Flood(w);
-        for (int cz = 0; cz < n; cz++) for (int cy = 0; cy < n; cy++) for (int cx = 0; cx < n; cx++) {
-            SectionCache.Data d = sections[cx + n * (cy + n * cz)];
+        for (int cz = 0; cz < nh; cz++) for (int cy = 0; cy < nv; cy++) for (int cx = 0; cx < nh; cx++) {
+            SectionCache.Data d = sections[cx + nh * (cy + nv * cz)];
             for (int k = 0; k < d.srcPacked().length; k++) {
                 int p = d.srcPacked()[k];
                 if (none) continue;
                 int local = p & 4095, level = p >> 12 & 15;
                 int lx = local & 15, lz = local >> 4 & 15, ly = local >> 8;
-                int start = (cx << 4) + lx + size * ((cy << 4) + ly + size * ((cz << 4) + lz));
+                int start = (cx << 4) + lx + hs * ((cy << 4) + ly + vs * ((cz << 4) + lz));
                 int rgb = d.srcRgb()[k];
                 float top = Math.max(1, Math.max(rgb >> 16 & 255, Math.max(rgb >> 8 & 255, rgb & 255)));
                 float r = (rgb >> 16 & 255) / top, g = (rgb >> 8 & 255) / top, b = (rgb & 255) / top;
@@ -78,7 +97,7 @@ final class LightJobs {
 
     /** Подвижные источники: RGBA (rgb — добавка света ×0.5, a — не используется). */
     static byte[] dynamics(World w, List<Dyn> sources) {
-        int size = w.size(), cells = size * size * size;
+        int cells = w.cells();
         float[] acc = new float[cells * 3];
         Flood flood = new Flood(w);
         for (Dyn s : sources) {
@@ -105,7 +124,6 @@ final class LightJobs {
 
     /** Блоки, откуда свет начинается: точка — её блок; прямоугольник — блоки перед проёмом (с обеих сторон, если светит в обе). */
     private static int[] seeds(World w, Dyn s) {
-        int size = w.size();
         if (s.w() <= 0) {
             int c = cell(w, (int) Math.floor(s.x()), (int) Math.floor(s.y()), (int) Math.floor(s.z()));
             return c < 0 ? new int[0] : new int[]{c};
@@ -130,12 +148,11 @@ final class LightJobs {
     }
 
     private static int cell(World w, int x, int y, int z) {
-        int s = w.size();
         x -= w.ox();
         y -= w.oy();
         z -= w.oz();
-        if (x < 0 || y < 0 || z < 0 || x >= s || y >= s || z >= s) return -1;
-        return x + s * (y + s * z);
+        if (x < 0 || y < 0 || z < 0 || x >= w.hs() || y >= w.vs() || z >= w.hs()) return -1;
+        return x + w.hs() * (y + w.vs() * z);
     }
 
     interface Visit {
@@ -143,42 +160,74 @@ final class LightJobs {
     }
 
     /** Растекание от блоков-семян: по уровням сверху вниз (потери 1–15 за шаг), каждый блок — один раз с лучшим уровнем. */
+    /** Рабочие массивы растекания по размеру объёма: большой объём подкраски не выделяет их заново на каждый расчёт. */
+    private static final class Scratch {
+        final byte[] best;
+        final int[] stamp;
+        int run;
+
+        Scratch(int cells) {
+            best = new byte[cells];
+            stamp = new int[cells];
+        }
+    }
+
+    /** Только поток расчёта; два размера — подкраска и подвижный свет. */
+    private static final java.util.Map<Integer, Scratch> SCRATCH = new java.util.LinkedHashMap<>();
+
+    private static Scratch scratch(int cells) {
+        Scratch sc = SCRATCH.get(cells);
+        if (sc == null) {
+            if (SCRATCH.size() >= 2) SCRATCH.remove(SCRATCH.keySet().iterator().next());
+            SCRATCH.put(cells, sc = new Scratch(cells));
+        }
+        return sc;
+    }
+
     private static final class Flood {
         private final World w;
-        private final int size;
+        private final int hs, vs;
         private final byte[] best;
         private final int[] stamp;
+        private final Scratch sc;
         private int run;
         private final int[][] buckets = new int[16][];
         private final int[] counts = new int[16];
 
         Flood(World w) {
             this.w = w;
-            this.size = w.size();
-            int cells = size * size * size;
-            best = new byte[cells];
-            stamp = new int[cells];
+            this.hs = w.hs();
+            this.vs = w.vs();
+            sc = scratch(w.cells());
+            best = sc.best;
+            stamp = sc.stamp;
+            run = sc.run;
             for (int i = 0; i < 16; i++) buckets[i] = new int[256];
         }
 
         void run(int[] seeds, int level, Visit visit) {
             run++;
+            if (run == Integer.MAX_VALUE) {
+                java.util.Arrays.fill(stamp, 0);
+                run = 1;
+            }
+            sc.run = run;
             java.util.Arrays.fill(counts, 0);
             for (int s : seeds) push(s, level);
-            int s2 = size * size;
+            int s2 = hs * vs;
             for (int lv = level; lv >= 1; lv--) {
                 for (int q = 0; q < counts[lv]; q++) {
                     int c = buckets[lv][q];
                     if ((best[c] & 255) != lv) continue;
                     visit.at(c, lv);
                     if (lv == 1) continue;
-                    int x = c % size, y = c / size % size, z = c / s2;
+                    int x = c % hs, y = c / hs % vs, z = c / s2;
                     if (x > 0) spread(c - 1, lv);
-                    if (x < size - 1) spread(c + 1, lv);
-                    if (y > 0) spread(c - size, lv);
-                    if (y < size - 1) spread(c + size, lv);
+                    if (x < hs - 1) spread(c + 1, lv);
+                    if (y > 0) spread(c - hs, lv);
+                    if (y < vs - 1) spread(c + hs, lv);
                     if (z > 0) spread(c - s2, lv);
-                    if (z < size - 1) spread(c + s2, lv);
+                    if (z < hs - 1) spread(c + s2, lv);
                 }
             }
         }

@@ -17,5 +17,11 @@
   "flrender.technique.flrender.held_light": "Coloured light from held items",
   "flrender.technique.flrender.held_light.tooltip": "A torch, lantern, glow stick, lava bucket... in hand (yours and others'), dropped or flying lights the area round it in its colour. Off with a shader pack - the pack does it itself.",
   "flrender.technique.flrender.flashlight": "Flashlight light",
-  "flrender.technique.flrender.flashlight.tooltip": "The Survivor's Arsenal flashlight (yours and others', up to 4) gives real light: its cone lights blocks as they are drawn, like a torch - colours show even in full darkness; people, mobs, mannequins and chests in the beam are lit as if a torch were next to them. It does not pass through walls, closed doors or slabs. The flashlight circle stays on top. Off with a shader pack - there only the flashlight circle."
+  "flrender.technique.flrender.flashlight.tooltip": "The Survivor's Arsenal flashlight (yours and others', up to 4) gives real light: its cone lights blocks as they are drawn, like a torch - colours show even in full darkness; people, mobs, mannequins and chests in the beam are lit as if a torch were next to them. It does not pass through walls, closed doors or slabs. The flashlight circle stays on top. Off with a shader pack - there only the flashlight circle.",
+  "flrender.option.color_range": "Coloured light range",
+  "flrender.option.color_range.tooltip": "How far the colour of light sources (torches, lamps, glow sticks) is shown.\nAs render distance - as far as the light itself (capped by quality: medium ~90, high ~120, ultra ~150 blocks).\nLower - for a weak computer: less memory and work, the colour ends closer, but softly.",
+  "flrender.color_range.render": "As render distance",
+  "flrender.color_range.far": "128 blocks",
+  "flrender.color_range.medium": "64 blocks",
+  "flrender.color_range.near": "32 blocks"
 }

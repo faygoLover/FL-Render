@@ -136,7 +136,10 @@ public final class WorldLight {
         shader.safeGetUniform("InvProjMat").set(new Matrix4f(projection).invert());
         shader.safeGetUniform("InvViewMat").set(new Matrix4f(view).invert());
         shader.safeGetUniform("VolOrigin").set((float) o.x, (float) o.y, (float) o.z);
-        shader.safeGetUniform("VolSize").set((float) ColorVolume.size());
+        Vec3 vs = ColorVolume.size(), ao = ColorVolume.addOriginRelative(cam), as = ColorVolume.addSize();
+        shader.safeGetUniform("VolSize").set((float) vs.x, (float) vs.y, (float) vs.z);
+        shader.safeGetUniform("AddOrigin").set((float) ao.x, (float) ao.y, (float) ao.z);
+        shader.safeGetUniform("AddSize").set((float) Math.max(1, as.x), (float) Math.max(1, as.y), (float) Math.max(1, as.z));
         shader.safeGetUniform("HasAdd").set(ColorVolume.hasAdd() ? 1.0f : 0.0f);
         shader.safeGetUniform("Tint").set(blocks ? TINT_STRENGTH : 0.0f);
         shader.safeGetUniform("Boost").set(TINT_BOOST);

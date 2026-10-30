@@ -106,6 +106,22 @@ public final class Settings {
         props().setProperty(FPS_CHECKED, "true");
     }
 
+    private static final String COLOR_RANGE = "color_light_range";
+    private static volatile ColorRange colorRange;
+
+    /** Дальность цветного света (по умолчанию — как прорисовка). */
+    public static ColorRange colorRange() {
+        ColorRange r = colorRange;
+        if (r == null) colorRange = r = parse(ColorRange.class, props().getProperty(COLOR_RANGE), ColorRange.RENDER);
+        return r;
+    }
+
+    public static synchronized void setColorRange(ColorRange r) {
+        if (r == ColorRange.RENDER) props().remove(COLOR_RANGE);
+        else props().setProperty(COLOR_RANGE, r.name());
+        colorRange = r;
+    }
+
     private static final String COLORED_PACKS = "colored_light_packs";
     private static final String COLORED_PACKS_DEFAULT = "colored,voxel,photon,ptgi";
 
