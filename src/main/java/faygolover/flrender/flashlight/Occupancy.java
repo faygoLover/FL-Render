@@ -178,6 +178,12 @@ public final class Occupancy {
         try {
             Block b = s.getBlock();
             if (b instanceof AbstractGlassBlock || b instanceof IronBarsBlock || s.is(Tags.Blocks.GLASS) || s.is(Tags.Blocks.GLASS_PANES)) return 0;
+            // Невидимые блоки-заместители и анимированные модели (большие двери G3 Doors и т. п.): форма у них — от блок-сущности
+            // и места в двери, а не от состояния, и меняется при открытии без смены блока. Маска запоминается по состоянию —
+            // первая же закрытая дверь затеняла бы все такие проёмы навсегда (Ж17, 02.11). Свет они не держат.
+            net.minecraft.world.level.block.RenderShape rs = s.getRenderShape();
+            if (rs == net.minecraft.world.level.block.RenderShape.INVISIBLE || rs == net.minecraft.world.level.block.RenderShape.ENTITYBLOCK_ANIMATED)
+                return 0;
             VoxelShape shape = s.getCollisionShape(level, pos);
             if (shape.isEmpty()) return 0;
             if (Block.isShapeFullBlock(shape)) return 0xFF;
