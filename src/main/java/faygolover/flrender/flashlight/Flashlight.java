@@ -78,7 +78,8 @@ public final class Flashlight {
             BEAMS.clear();
             return;
         }
-        // Объём стен держим и без лучей: фонарь включат — свет сразу правильный.
+        // Объём стен нужен только при лучах: без фонаря рядом он ничего не стоит, ближние секции соберутся за несколько кадров.
+        if (BEAMS.isEmpty()) return;
         try {
             Occupancy.frame(cam);
         } catch (RuntimeException e) {
