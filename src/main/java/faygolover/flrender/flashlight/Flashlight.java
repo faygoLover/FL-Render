@@ -2,17 +2,20 @@ package faygolover.flrender.flashlight;
 
 import faygolover.flrender.FlRenderMod;
 import faygolover.flrender.api.FlRender;
+import faygolover.flrender.api.LightBeams;
 import faygolover.flrender.api.Quality;
 import faygolover.flrender.api.Technique;
 import faygolover.flrender.client.Oculus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.fml.ModList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,16 +24,17 @@ import java.util.List;
  * Сквозь стены не проходит: путь от поверхности к лампе проверяется по половинкам блоков ({@link Occupancy}).
  * Экранный круг фонаря SA остаётся поверх (RP Fixes с этим светом снижает его усиление — {@link FlRender#flashlightLight}).
  * <p>
- * Лучи — у фонарей Survivor's Arsenal ({@link SaBeams}): до 4, свои и чужие. Блоки — патч шейдера чанков Embeddium
- * ({@link ChunkPatch}). С шейдерпаком выключено: там только экранный фонарь SA, как раньше.
+ * Лучи — у фонарей Survivor's Arsenal ({@link SaBeams}) и других модов ({@link LightBeams}, свой цвет и форма у
+ * каждого): до {@link #MAX_BEAMS}, свои первыми, остальные по расстоянию. Блоки — патч шейдера чанков Embeddium
+ * ({@link ChunkPatch}). С шейдерпаком выключено: там только экранные проходы модов.
  * Техника {@code flrender.flashlight} — со «Среднего».
  */
 public final class Flashlight {
     private Flashlight() {}
 
-    public static final int MAX_BEAMS = 4;
+    public static final int MAX_BEAMS = LightBeams.MAX;
     public static final Technique TECHNIQUE = FlRender.technique(FlRender.MODID, "flashlight", Quality.MEDIUM);
-    /** Цвет лампы (как у SA). */
+    /** Цвет лампы SA. */
     static final float R = 1.0f, G = 0.96f, B = 0.88f;
     /** Слабее этого свет сущность не меняет. */
     private static final float ENTITY_MIN = 0.02f;
@@ -54,9 +58,11 @@ public final class Flashlight {
         // Техника регистрируется при загрузке класса — до того, как строится вкладка настроек.
     }
 
+    private static long lastNanos;
+
     /** Включён ли настоящий свет фонаря сейчас (техника включена и шейдерпака нет). */
     public static boolean enabled() {
-        return SA && !saBroken && TECHNIQUE.on() && !Oculus.shaderPack();
+        return TECHNIQUE.on() && !Oculus.shaderPack();
     }
 
     /** До рисования мира (после неба): лучи этого кадра и объём стен. */
@@ -70,14 +76,37 @@ public final class Flashlight {
         camX = cam.x;
         camY = cam.y;
         camZ = cam.z;
-        try {
-            SaBeams.collect(mc, event.getPartialTick(), cam, BEAMS);
-        } catch (LinkageError | RuntimeException e) {
-            saBroken = true;
-            FlRenderMod.LOGGER.error("FL Render: лучи фонаря Survivor's Arsenal не читаются (другая версия?), свет фонаря выключен", e);
-            BEAMS.clear();
-            return;
+        long now = System.nanoTime();
+        float dt = lastNanos == 0L ? 0.0f : Mth.clamp((now - lastNanos) / 1.0e9f, 0.0f, 0.1f);
+        lastNanos = now;
+        float partial = event.getPartialTick();
+        List<SaBeams.Found> found = new ArrayList<>();
+        if (SA && !saBroken) {
+            try {
+                SaBeams.collect(mc, partial, cam, dt, found);
+            } catch (LinkageError | RuntimeException e) {
+                saBroken = true;
+                FlRenderMod.LOGGER.error("FL Render: лучи фонаря Survivor's Arsenal не читаются (другая версия?), они без света", e);
+                found.clear();
+            }
         }
+        List<LightBeams.Spec> specs = new ArrayList<>();
+        for (LightBeams.Source source : LightBeams.sources()) {
+            specs.clear();
+            try {
+                source.collect(mc, partial, cam, dt, specs);
+            } catch (RuntimeException e) {
+                FlRenderMod.LOGGER.error("FL Render: источник лучей фонаря {} сломался", source, e);
+                continue;
+            }
+            for (LightBeams.Spec s : specs) {
+                Beam b = new Beam(s.x(), s.y(), s.z(), s.dx(), s.dy(), s.dz(), s.range(), s.intensity(), s.coreIn(), s.coreOut(),
+                        s.spillIn(), s.spillOut(), s.washIn(), s.washOut(), s.spillWeight(), s.washWeight(), s.r(), s.g(), s.b(), s.owner());
+                found.add(new SaBeams.Found(b, s.local(), cam.distanceToSqr(s.x(), s.y(), s.z())));
+            }
+        }
+        found.sort(Comparator.comparing((SaBeams.Found f) -> !f.local()).thenComparingDouble(SaBeams.Found::distSqr));
+        for (int i = 0; i < found.size() && BEAMS.size() < MAX_BEAMS; i++) BEAMS.add(found.get(i).beam());
         // Объём стен нужен только при лучах: без фонаря рядом он ничего не стоит, ближние секции соберутся за несколько кадров.
         if (BEAMS.isEmpty()) return;
         try {

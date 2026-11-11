@@ -50,11 +50,11 @@ public final class ChunkPatch {
             in vec3 v_FlLm;
 
             uniform int u_FlBeamCount;
-            uniform vec4 u_FlBeamPos[4];   // xyz lamp (camera relative), w range
-            uniform vec4 u_FlBeamDir[4];   // xyz direction, w intensity
-            uniform vec4 u_FlBeamCone[4];  // cos core inner, core outer, spill inner, spill outer
-            uniform vec4 u_FlBeamWash[4];  // cos wash inner, wash outer, spill weight, wash weight
-            uniform vec3 u_FlBeamColor;
+            uniform vec4 u_FlBeamPos[8];   // xyz lamp (camera relative), w range
+            uniform vec4 u_FlBeamDir[8];   // xyz direction, w intensity
+            uniform vec4 u_FlBeamCone[8];  // cos core inner, core outer, spill inner, spill outer
+            uniform vec4 u_FlBeamWash[8];  // cos wash inner, wash outer, spill weight, wash weight
+            uniform vec3 u_FlBeamColor[8];
             uniform vec4 u_FlParams;       // x gain, y falloff, z fade start
             uniform sampler3D u_FlOcc;     // half-block occupancy round the camera, 8 bits per block
             uniform ivec3 u_FlCamBlock;
@@ -134,8 +134,8 @@ public final class ChunkPatch {
                 if (dot(n, p) > 0.0) {
                     n = -n;
                 }
-                float light = 0.0;
-                for (int i = 0; i < 4; i++) {
+                vec3 light = vec3(0.0);
+                for (int i = 0; i < 8; i++) {
                     if (i >= u_FlBeamCount) {
                         break;
                     }
@@ -165,9 +165,9 @@ public final class ChunkPatch {
                     if (amount < 0.004) {
                         continue;
                     }
-                    light += amount * fl_visible(p + n * 0.02, o.xyz);
+                    light += u_FlBeamColor[i] * (amount * fl_visible(p + n * 0.02, o.xyz));
                 }
-                if (light <= 0.0) {
+                if (max(light.r, max(light.g, light.b)) <= 0.0) {
                     return vec3(0.0);
                 }
             #ifdef USE_VANILLA_COLOR_FORMAT
@@ -175,7 +175,7 @@ public final class ChunkPatch {
             #else
                 vec3 base = v_FlBase.rgb * v_FlBase.a;
             #endif
-                vec3 add = min(light * u_FlBeamColor, max(vec3(1.0) - v_FlLm, vec3(0.0)));
+                vec3 add = min(light, max(vec3(1.0) - v_FlLm, vec3(0.0)));
                 return tex * base * add;
             }
 
@@ -267,8 +267,10 @@ public final class ChunkPatch {
         List<Beam> beams = Flashlight.beams();
         int n = Math.min(beams.size(), Flashlight.MAX_BEAMS);
         double cx = Flashlight.camX(), cy = Flashlight.camY(), cz = Flashlight.camZ();
+        int m = Flashlight.MAX_BEAMS;
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer pos = stack.mallocFloat(16), dir = stack.mallocFloat(16), cone = stack.mallocFloat(16), wash = stack.mallocFloat(16);
+            FloatBuffer pos = stack.mallocFloat(4 * m), dir = stack.mallocFloat(4 * m), cone = stack.mallocFloat(4 * m),
+                    wash = stack.mallocFloat(4 * m), col = stack.mallocFloat(3 * m);
             for (int i = 0; i < Flashlight.MAX_BEAMS; i++) {
                 Beam b = i < n ? beams.get(i) : null;
                 if (b == null) {
@@ -278,24 +280,27 @@ public final class ChunkPatch {
                         cone.put(0.0f);
                         wash.put(0.0f);
                     }
+                    col.put(0.0f).put(0.0f).put(0.0f);
                     continue;
                 }
                 pos.put((float) (b.x() - cx)).put((float) (b.y() - cy)).put((float) (b.z() - cz)).put(b.range());
                 dir.put((float) b.dx()).put((float) b.dy()).put((float) b.dz()).put(b.intensity());
                 cone.put(b.coreIn()).put(b.coreOut()).put(b.spillIn()).put(b.spillOut());
                 wash.put(b.washIn()).put(b.washOut()).put(b.spillWeight()).put(b.washWeight());
+                col.put(b.r()).put(b.g()).put(b.b());
             }
             pos.flip();
             dir.flip();
             cone.flip();
             wash.flip();
+            col.flip();
             GL20.glUniform1i(loc[0], n);
             GL20.glUniform4fv(loc[1], pos);
             GL20.glUniform4fv(loc[2], dir);
             GL20.glUniform4fv(loc[3], cone);
             GL20.glUniform4fv(loc[4], wash);
+            GL20.glUniform3fv(loc[5], col);
         }
-        GL20.glUniform3f(loc[5], Flashlight.R, Flashlight.G, Flashlight.B);
         GL20.glUniform4f(loc[6], Beam.GAIN, Beam.FALLOFF, Beam.FADE_START, 0.0f);
         int bx = (int) Math.floor(cx), by = (int) Math.floor(cy), bz = (int) Math.floor(cz);
         GL20.glUniform3i(loc[8], bx, by, bz);

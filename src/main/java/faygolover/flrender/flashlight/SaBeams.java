@@ -10,8 +10,6 @@ import net.minecraft.world.phys.Vec3;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.UUID;
 /**
  * Лучи фонарей Survivor's Arsenal ({@code sa_combat:flashlight}) — так же, как их собирает сам мод
  * ({@code FlashlightBeams}/{@code FlashlightBeam.resolve}): включённый фонарь в любой руке у игроков ближе 72 блоков,
- * свой первым, остальные по расстоянию, до 4; место лампы у руки, режим (дальний/ближний), заряд, под водой короче;
+ * (порядок и лимит — {@link Flashlight}); место лампы у руки, режим (дальний/ближний), заряд, под водой короче;
  * направление догоняет взгляд с той же задержкой. Свой расчёт, а не вызов мода: у мода он считает задержку по времени
  * между вызовами (второй вызов за кадр сбил бы её), а RP Fixes прячет у него лучи, фонаря которых камера не видит, —
  * настоящему свету они нужны (свет из-за угла). Методы предмета SA — через MethodHandle (его классы тянут GeckoLib).
@@ -73,21 +71,16 @@ final class SaBeams {
     private static final float AIM_LAG = 0.055f;
 
     private static final Map<UUID, double[]> AIM = new HashMap<>();
-    private static long lastNanos;
 
-    private record Found(Beam beam, boolean local, double distSqr) {
+    record Found(Beam beam, boolean local, double distSqr) {
     }
 
-    static void collect(Minecraft mc, float partial, Vec3 cam, List<Beam> out) {
-        long now = System.nanoTime();
-        float dt = lastNanos == 0L ? 0.0f : Mth.clamp((now - lastNanos) / 1.0e9f, 0.0f, 0.1f);
-        lastNanos = now;
+    static void collect(Minecraft mc, float partial, Vec3 cam, float dt, List<Found> found) {
         if (mc.level == null || mc.player == null) {
             AIM.clear();
             return;
         }
         boolean firstPersonView = mc.options.getCameraType().isFirstPerson();
-        List<Found> found = new ArrayList<>();
         Set<UUID> seen = new HashSet<>();
         for (Player p : mc.level.players()) {
             if (p == null || p.isSpectator()) continue;
@@ -100,8 +93,6 @@ final class SaBeams {
             found.add(new Found(b, local, cam.distanceToSqr(b.x(), b.y(), b.z())));
         }
         AIM.keySet().retainAll(seen);
-        found.sort(Comparator.comparing((Found f) -> !f.local()).thenComparingDouble(Found::distSqr));
-        for (int i = 0; i < found.size() && out.size() < Flashlight.MAX_BEAMS; i++) out.add(found.get(i).beam());
     }
 
     private static ItemStack lit(Player p) {
@@ -140,7 +131,8 @@ final class SaBeams {
             intensity *= 0.85f;
         }
         return new Beam(o.x, o.y, o.z, aim.x, aim.y, aim.z, range, intensity,
-                cos(coreIn), cos(coreOut), cos(spillIn), cos(spillOut), cos(washIn), cos(washOut), spillW, washW, p.getId());
+                cos(coreIn), cos(coreOut), cos(spillIn), cos(spillOut), cos(washIn), cos(washOut), spillW, washW,
+                Flashlight.R, Flashlight.G, Flashlight.B, p.getId());
     }
 
     private static float cos(float deg) {
