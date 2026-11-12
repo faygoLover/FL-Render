@@ -19,7 +19,7 @@ IMG = SITE / 'img'
 spec = importlib.util.spec_from_file_location('co', CC / 'Pack Audit/carryon_gallery/build.py')
 co = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(co)
-co.MODS = Path(os.environ['APPDATA']) / 'ElyPrismLauncher/instances/DEP_S5_rev/minecraft/mods'
+co.MODS = Path('D:/') / 'ElyPrismLauncher/instances/DEP_S5_rev/minecraft/mods'
 
 # Рисуем блок включённым: свойства самого яркого состояния из выгрузки (поворот — как обычно, лицом к нам).
 ORIENT = {'facing', 'horizontal_facing', 'rotation', 'axis', 'direction', 'face', 'attach_face', 'attachment', 'hanging'}
